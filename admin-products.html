@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mahsulotlar | Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <i class="fas fa-industry text-primary"></i> <span>QOG'OZ ZAVOD</span>
+            </a>
+            <p class="admin-badge">Admin Panel</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Boshqaruv paneli</a></li>
+                <li><a href="admin-products.html" class="active"><i class="fas fa-box"></i> Mahsulotlar</a></li>
+                <li><a href="admin-orders.html"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span class="badge"
+                            id="orders-badge">0</span></a></li>
+                <li><a href="admin-customers.html"><i class="fas fa-users"></i> Mijozlar</a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-settings.html"><i class="fas fa-cog"></i> Sozlamalar</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Chiqish</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Mahsulotlarni izlash...">
+            </div>
+
+            <div class="header-actions">
+                <button class="notif-btn">
+                    <i class="far fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=FF8200&color=fff" alt="Admin">
+                    <div class="user-info">
+                        <strong>Admin User</strong>
+                        <span>Boshqaruvchi</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="page-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Mahsulotlar Ro'yxati</h1>
+                    <p>Ombordagi va saytdagi barcha mahsulotlar</p>
+                </div>
+                <button class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+                    <i class="fas fa-plus"></i> Yangi Mahsulot Qo'shish
+                </button>
+            </div>
+
+            <!-- Products Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <!-- Product Card 1 -->
+                <div
+                    style="background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition);">
+                    <div
+                        style="height: 180px; background-image: url('QOG\'OZ.jpg'); background-size: cover; background-position: center; position: relative;">
+                        <span
+                            style="position: absolute; top: 15px; right: 15px; background: var(--success); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">Omborda
+                            mavjud</span>
+                    </div>
+                    <div style="padding: 20px;">
+                        <span style="color: var(--text-light); font-size: 0.8rem; text-transform: uppercase;">A4
+                            Format</span>
+                        <h3 style="margin: 5px 0 10px; font-size: 1.1rem; color: var(--secondary);">Premium Ofis Qog'ozi
+                            (80g/m2)</h3>
+                        <p style="color: var(--primary); font-size: 1.2rem; font-weight: bold; margin-bottom: 20px;">
+                            28,500 so'm <span
+                                style="font-size: 0.8rem; color: var(--text-light); font-weight: normal;">/
+                                pachka</span></p>
+
+                        <div
+                            style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 15px;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;"><i class="fas fa-cubes"></i>
+                                4,500 ta</span>
+                            <div style="display: flex; gap: 10px;">
+                                <button style="background: none; border: none; color: var(--info); cursor: pointer;"><i
+                                        class="fas fa-pen"></i></button>
+                                <button
+                                    style="background: none; border: none; color: var(--danger); cursor: pointer;"><i
+                                        class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </main>
+
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--bg-white);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 15px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 15px;
+            transition: background 0.2s;
+        }
+
+        .notification-item:hover {
+            background-color: var(--bg-light);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(255, 130, 0, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .notif-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notif-icon.order {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .notif-icon.alert {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .notif-icon.message {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .notif-details p {
+            font-size: 0.95rem;
+            color: var(--text);
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .notif-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .modal-footer {
+            padding: 15px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .modal-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .modal-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <!-- Notification Modal -->
+    <div id="notifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell text-primary"></i> Bildirishnomalar</h3>
+                <button class="close-modal" id="closeNotif">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="notification-item unread">
+                    <div class="notif-icon order">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>Yangi buyurtma!</strong> Alisher Rustamovdan 1,250,000 so'mlik xarid.</p>
+                        <span class="notif-time">10 daqiqa oldin</span>
+                    </div>
+                </div>
+                <div class="notification-item unread">
+                    <div class="notif-icon alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>Diqqat!</strong> Omborda "Bosmaxona Rulon Qog'ozi" kam qoldi (8 ta).</p>
+                        <span class="notif-time">2 soat oldin</span>
+                    </div>
+                </div>
+                <div class="notification-item unread">
+                    <div class="notif-icon message">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>Yangi xabar:</strong> "Ideal Print" MCHJ sizga xabar qoldirdi.</p>
+                        <span class="notif-time">Kecha, 14:30</span>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <div class="notif-icon order">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p>Buyurtma #ORD-002 muvaffaqiyatli yetkazib berildi.</p>
+                        <span class="notif-time">05 Mart, 2026</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication logic
+        function checkAuth() {
+            const user = JSON.parse(sessionStorage.getItem('qogozAdminUser'));
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            // Update UI with admin name
+            const userNameElements = document.querySelectorAll('.user-info strong');
+            const userAvatars = document.querySelectorAll('.user-profile img');
+            const fullName = `${user.firstName} ${user.lastName}`;
+
+            const savedAvatar = localStorage.getItem('qogozAdminAvatar');
+            userNameElements.forEach(el => el.textContent = fullName);
+            userAvatars.forEach(img => {
+                img.src = savedAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=FF8200&color=fff`;
+            });
+        }
+
+        function logout() {
+            sessionStorage.removeItem('qogozAdminUser');
+            window.location.href = 'admin-login.html';
+        }
+
+        // Add logout listeners
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        });
+
+        // Modal Functionality
+        const notifBtn = document.querySelector('.notif-btn');
+        const notifModal = document.getElementById('notifModal');
+        const closeNotif = document.getElementById('closeNotif');
+
+        notifBtn.addEventListener('click', () => {
+            notifModal.classList.add('show');
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            let hasUnread = false;
+            notifs.forEach(n => {
+                if (n.unread) {
+                    n.unread = false;
+                    hasUnread = true;
+                }
+            });
+            if (hasUnread) {
+                localStorage.setItem('qogozNotifications', JSON.stringify(notifs));
+                updateNotificationBadge();
+            }
+        });
+
+        closeNotif.addEventListener('click', () => {
+            notifModal.classList.remove('show');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === notifModal) {
+                notifModal.classList.remove('show');
+            }
+        });
+
+        function loadNotifications() {
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            const modalBody = document.querySelector('.modal-body');
+
+            if (notifs.length === 0) {
+                modalBody.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-light);">Yangi bildirishnomalar yo'q</div>`;
+                return;
+            }
+
+            modalBody.innerHTML = '';
+            notifs.forEach(notif => {
+                const item = document.createElement('div');
+                item.className = `notification-item ${notif.unread ? 'unread' : ''}`;
+                item.innerHTML = `
+                    <div class="notif-icon ${notif.title.includes('buyurtma') ? 'order' : 'message'}">
+                        <i class="fas ${notif.title.includes('buyurtma') ? 'fa-shopping-cart' : 'fa-comment-dots'}"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>${notif.title}</strong> ${notif.body}</p>
+                        <span class="notif-time">${notif.time}</span>
+                    </div>
+                `;
+                modalBody.appendChild(item);
+            });
+        }
+
+        function updateNotificationBadge() {
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            const unreadCount = notifs.filter(n => n.unread).length;
+            const badgeList = document.querySelectorAll('.notif-badge');
+
+            badgeList.forEach(badge => {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        function updateSidebarBadge() {
+            const orders = JSON.parse(localStorage.getItem('qogozOrders') || '[]');
+            const badge = document.getElementById('orders-badge');
+            if (badge) badge.textContent = orders.length;
+        }
+
+        checkAuth();
+        updateSidebarBadge();
+        loadNotifications();
+        updateNotificationBadge();
+    </script>
+</body>
+
+</html>

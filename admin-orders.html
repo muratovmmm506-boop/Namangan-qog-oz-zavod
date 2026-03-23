@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyurtmalar | Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <i class="fas fa-industry text-primary"></i> <span>QOG'OZ ZAVOD</span>
+            </a>
+            <p class="admin-badge">Admin Panel</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Boshqaruv paneli</a></li>
+                <li><a href="admin-products.html"><i class="fas fa-box"></i> Mahsulotlar</a></li>
+                <li><a href="admin-orders.html" class="active"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span
+                            class="badge" id="orders-badge">0</span></a></li>
+                <li><a href="admin-customers.html"><i class="fas fa-users"></i> Mijozlar</a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-settings.html"><i class="fas fa-cog"></i> Sozlamalar</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="index.html" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Chiqish</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buyurtmalarni izlash...">
+            </div>
+
+            <div class="header-actions">
+                <button class="notif-btn">
+                    <i class="far fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </button>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=FF8200&color=fff" alt="Admin">
+                    <div class="user-info">
+                        <strong>Admin User</strong>
+                        <span>Boshqaruvchi</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="page-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Buyurtmalar</h1>
+                    <p>Barcha kelib tushgan buyurtmalarni boshqarish</p>
+                </div>
+                <button class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+                    <i class="fas fa-plus"></i> Yangi Buyurtma
+                </button>
+            </div>
+
+            <!-- Filters -->
+            <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+                <select style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
+                    <option>Barcha holatlar</option>
+                    <option>Kutilmoqda</option>
+                    <option>Jarayonda</option>
+                    <option>Bajarildi</option>
+                    <option>Bekor qilingan</option>
+                </select>
+                <input type="date"
+                    style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
+                <button class="btn btn-outline" style="padding: 10px 20px; font-size: 0.9rem;"><i
+                        class="fas fa-filter"></i> Filtrlash</button>
+            </div>
+
+            <!-- Orders Table -->
+            <div class="recent-orders">
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Buyurtma ID</th>
+                                <th>Mijoz</th>
+                                <th>Sana</th>
+                                <th>Manzil</th>
+                                <th>Mahsulotlar</th>
+                                <th>Summa</th>
+                                <th>Holat</th>
+                                <th>Amallar</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-list">
+                            <!-- Buyurtmalar JavaScript orqali qo'shiladi -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div
+                    style="padding: 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border);">
+                    <span style="color: var(--text-light); font-size: 0.9rem;">Jami 124 ta buyurtmadan 1-5
+                        ko'rsatilmoqda</span>
+                    <div style="display: flex; gap: 5px;">
+                        <button
+                            style="padding: 8px 12px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer; color: var(--text-light);"><i
+                                class="fas fa-chevron-left"></i></button>
+                        <button
+                            style="padding: 8px 15px; border: 1px solid var(--primary); background: var(--primary); border-radius: 6px; cursor: pointer; color: white; font-weight: bold;">1</button>
+                        <button
+                            style="padding: 8px 15px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer;">2</button>
+                        <button
+                            style="padding: 8px 15px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer;">3</button>
+                        <span style="padding: 8px;">...</span>
+                        <button
+                            style="padding: 8px 12px; border: 1px solid var(--border); background: white; border-radius: 6px; cursor: pointer;"><i
+                                class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: var(--bg-white);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.2rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 0;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 15px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 15px;
+            transition: background 0.2s;
+        }
+
+        .notification-item:hover {
+            background-color: var(--bg-light);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(255, 130, 0, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .notif-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .notif-icon.order {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .notif-icon.alert {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .notif-icon.message {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .notif-details p {
+            font-size: 0.95rem;
+            color: var(--text);
+            margin-bottom: 5px;
+            line-height: 1.4;
+        }
+
+        .notif-time {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .modal-footer {
+            padding: 15px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .modal-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .modal-footer a:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+
+    <!-- Notification Modal -->
+    <div id="notifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell text-primary"></i> Bildirishnomalar</h3>
+                <button class="close-modal" id="closeNotif">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="notification-item unread">
+                    <div class="notif-icon order">
+                        <i class="fas fa-shopping-cart"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>Yangi buyurtma!</strong> Alisher Rustamovdan 1,250,000 so'mlik xarid.</p>
+                        <span class="notif-time">10 daqiqa oldin</span>
+                    </div>
+                </div>
+                <div class="notification-item unread">
+                    <div class="notif-icon alert">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>Diqqat!</strong> Omborda "Bosmaxona Rulon Qog'ozi" kam qoldi (8 ta).</p>
+                        <span class="notif-time">2 soat oldin</span>
+                    </div>
+                </div>
+                <div class="notification-item unread">
+                    <div class="notif-icon message">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>Yangi xabar:</strong> "Ideal Print" MCHJ sizga xabar qoldirdi.</p>
+                        <span class="notif-time">Kecha, 14:30</span>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <div class="notif-icon order">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p>Buyurtma #ORD-002 muvaffaqiyatli yetkazib berildi.</p>
+                        <span class="notif-time">05 Mart, 2026</span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <a href="#">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="modal">
+        <div class="modal-content chat-modal-content">
+            <div class="modal-header">
+                <div class="chat-header">
+                    <img id="chat-avatar" src="" class="chat-user-avatar">
+                    <div class="chat-user-info">
+                        <h4 id="chat-name">Mijoz Ismi</h4>
+                        <span><i class="fas fa-circle"></i> Onlayn</span>
+                    </div>
+                </div>
+                <button class="close-modal" id="closeChat">&times;</button>
+            </div>
+            <div class="chat-body" id="chat-body">
+                <!-- Messages will be here -->
+            </div>
+            <div class="chat-footer">
+                <div class="chat-input-area">
+                    <button class="emoji-btn" id="emoji-btn"><i class="far fa-smile"></i></button>
+                    <div id="emoji-picker" class="emoji-picker-modal">
+                        <span class="emoji-item">😊</span>
+                        <span class="emoji-item">😂</span>
+                        <span class="emoji-item">👍</span>
+                        <span class="emoji-item">🔥</span>
+                        <span class="emoji-item">❤️</span>
+                        <span class="emoji-item">🙏</span>
+                        <span class="emoji-item">😮</span>
+                        <span class="emoji-item">😭</span>
+                        <span class="emoji-item">✅</span>
+                        <span class="emoji-item">🤝</span>
+                    </div>
+                    <input type="text" id="chat-input" placeholder="Javob yozing...">
+                    <button id="chat-send-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+                <div class="customer-meta">
+                    <div><span>Sana:</span> <strong id="chat-date">-</strong></div>
+                    <div><span>Manzil:</span> <strong id="chat-address">-</strong></div>
+                    <div><span>Buyurtma ID:</span> <strong id="chat-id">-</strong></div>
+                </div>
+                <div class="chat-actions">
+                    <a href="#" id="chat-tg" class="chat-action-btn tg" target="_blank">
+                        <i class="fab fa-telegram-plane"></i>
+                        <span>Telegram</span>
+                    </a>
+                    <a href="#" id="chat-ig" class="chat-action-btn ig" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="#" id="chat-tel" class="chat-action-btn tel">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>Qo'ng'iroq</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin Panel Protocol Check
+        if (window.location.protocol === 'file:' || window.location.hostname === '') {
+            alert("DIQQAT! Admin panelni oddiy fayl sifatida ochgansiz (file://).\n\nIshlash uchun mana bu manzil orqali kiring:\n👉 http://localhost:5001/admin-orders.html");
+        }
+
+        // Authentication logic
+        function checkAuth() {
+            const user = JSON.parse(sessionStorage.getItem('qogozAdminUser'));
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            // Update UI with admin name
+            const userNameElements = document.querySelectorAll('.user-info strong');
+            const userAvatars = document.querySelectorAll('.user-profile img');
+            const fullName = `${user.firstName} ${user.lastName}`;
+
+            const savedAvatar = localStorage.getItem('qogozAdminAvatar');
+            userNameElements.forEach(el => el.textContent = fullName);
+            userAvatars.forEach(img => {
+                img.src = savedAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=FF8200&color=fff`;
+            });
+        }
+
+        function logout() {
+            sessionStorage.removeItem('qogozAdminUser');
+            window.location.href = 'admin-login.html';
+        }
+
+        // Add logout listeners
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                logout();
+            });
+        });
+
+        // Modal Functionality
+        const notifBtn = document.querySelector('.notif-btn');
+        const notifModal = document.getElementById('notifModal');
+        const closeNotif = document.getElementById('closeNotif');
+        const chatModal = document.getElementById('chatModal');
+        const closeChat = document.getElementById('closeChat');
+        const chatInput = document.getElementById('chat-input');
+        const chatSendBtn = document.getElementById('chat-send-btn');
+        const emojiBtn = document.getElementById('emoji-btn');
+        const emojiPicker = document.getElementById('emoji-picker');
+        let currentOrderForChat = null;
+
+        emojiBtn.addEventListener('click', () => {
+            emojiPicker.classList.toggle('show');
+        });
+
+        document.querySelectorAll('.emoji-item').forEach(e => {
+            e.addEventListener('click', () => {
+                chatInput.value += e.textContent;
+                emojiPicker.classList.remove('show');
+                chatInput.focus();
+            });
+        });
+
+        notifBtn.addEventListener('click', () => {
+            notifModal.classList.add('show');
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            let hasUnread = false;
+            notifs.forEach(n => {
+                if (n.unread) {
+                    n.unread = false;
+                    hasUnread = true;
+                }
+            });
+            if (hasUnread) {
+                localStorage.setItem('qogozNotifications', JSON.stringify(notifs));
+                updateNotificationBadge();
+            }
+        });
+
+        closeNotif.addEventListener('click', () => {
+            notifModal.classList.remove('show');
+        });
+
+        closeChat.addEventListener('click', () => {
+            chatModal.classList.remove('show');
+            emojiPicker.classList.remove('show');
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === notifModal) notifModal.classList.remove('show');
+            if (e.target === chatModal) chatModal.classList.remove('show');
+        });
+
+        chatSendBtn.addEventListener('click', () => {
+            sendMessage();
+            emojiPicker.classList.remove('show');
+        });
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+                emojiPicker.classList.remove('show');
+            }
+        });
+
+        function parseMyDate(dateStr) {
+            if (!dateStr) return 0;
+            const parts = dateStr.split(/[\s\-.:]+/);
+            if (parts.length < 5) return 0;
+            return new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]).getTime();
+        }
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || !currentOrderForChat) return;
+
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                
+                const phone = currentOrderForChat.phone;
+                const orderIndex = orders.findIndex(o => o.phone === phone);
+                if (orderIndex === -1) return;
+
+                const orderId = orders[orderIndex]._id || orders[orderIndex].id;
+                
+                const reply = {
+                    text: text,
+                    time: new Date().toLocaleTimeString('uz-UZ', { hour: '2-digit', minute: '2-digit' }),
+                    date: new Date().toLocaleDateString('uz-UZ')
+                };
+
+                await fetch('/api/orders/' + encodeURIComponent(orderId) + '/reply', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(reply)
+                });
+
+                // Refresh chat window to maintain correct sorting
+                viewChat(currentOrderForChat._id || currentOrderForChat.id);
+                chatInput.value = '';
+
+                const cleanPhone = currentOrderForChat.phone.replace(/\D/g, '');
+                const tgUrl = `https://t.me/${cleanPhone.startsWith('998') ? '+' + cleanPhone : '+998' + cleanPhone}?text=${encodeURIComponent(text)}`;
+
+                document.getElementById('chat-ig').href = `https://www.instagram.com/`;
+                document.getElementById('chat-tg').href = tgUrl;
+            } catch (err) {
+                console.error("Xabar yuborishda xatolik:", err);
+            }
+        }
+
+        async function deleteMsg(orderId, replyText, timestamp) {
+            if (!confirm("Haqiqatan ham bu xabarni o'chirmoqchimisiz?")) return;
+
+            try {
+                if (!replyText) {
+                    await fetch('/api/orders/' + encodeURIComponent(orderId), { method: 'DELETE' });
+                } else {
+                    await fetch('/api/orders/' + encodeURIComponent(orderId) + '/reply', {
+                        method: 'DELETE',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ text: replyText })
+                    });
+                }
+                
+                if (currentOrderForChat) viewChat(currentOrderForChat._id || currentOrderForChat.id);
+                loadOrders();
+            } catch (err) {
+                console.error("Xabar o'chirishda xatolik:", err);
+            }
+        }
+        window.deleteMsg = deleteMsg;
+
+        async function viewChat(orderId) {
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                
+                const order = orders.find(o => (o._id || o.id) === orderId);
+                if (!order) return;
+                currentOrderForChat = order;
+
+                const customerOrders = orders.filter(o => o.phone === order.phone).reverse();
+
+                document.getElementById('chat-name').textContent = order.name;
+                document.getElementById('chat-avatar').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(order.name)}&background=random`;
+                document.getElementById('chat-date').textContent = order.date;
+                document.getElementById('chat-address').textContent = order.address || "Noma'lum";
+                document.getElementById('chat-id').textContent = String(orderId).substring(0, 8) + '...';
+
+                const cleanPhone = order.phone.replace(/\D/g, '');
+                const formattedPhone = cleanPhone.startsWith('998') ? '+' + cleanPhone : '+998' + cleanPhone;
+
+                document.getElementById('chat-tg').href = `https://t.me/${formattedPhone}`;
+                document.getElementById('chat-ig').href = `https://www.instagram.com/`;
+                document.getElementById('chat-tel').href = `tel:${formattedPhone}`;
+
+                const chatBody = document.getElementById('chat-body');
+                chatBody.innerHTML = '';
+
+                // Flatten and sort
+                let allMessages = [];
+                let sequence = 0;
+                customerOrders.forEach(o => {
+                    const cOrderId = o._id || o.id;
+                    allMessages.push({
+                        type: 'received',
+                        text: o.message || "Xabar yo'q",
+                        time: o.date,
+                        timestamp: parseMyDate(o.date),
+                        seq: sequence++,
+                        orderId: cOrderId,
+                        isReply: false
+                    });
+                    if (o.replies) {
+                        o.replies.forEach(r => {
+                            allMessages.push({
+                                type: 'sent',
+                                text: r.text,
+                                time: r.time,
+                                timestamp: parseMyDate(`${r.date} ${r.time}`),
+                                seq: sequence++,
+                                orderId: cOrderId,
+                                isReply: true
+                            });
+                        });
+                    }
+                });
+
+                allMessages.sort((a, b) => (a.timestamp - b.timestamp) || (a.seq - b.seq));
+
+                allMessages.forEach(m => {
+                    const deleteHtml = m.type === 'sent' ? `<button class="msg-delete-btn" onclick="deleteMsg('${m.orderId}', ${m.isReply ? "'" + m.text.replace(/'/g, "\\\\'") + "'" : 'null'}, ${m.timestamp})"><i class="fas fa-times"></i></button>` : '';
+                    chatBody.innerHTML += `
+                        <div class="message ${m.type}">
+                            ${deleteHtml}
+                            ${m.text}
+                            <span class="message-time">${m.time}</span>
+                        </div>
+                    `;
+                });
+
+                chatModal.classList.add('show');
+                setTimeout(() => chatBody.scrollTop = chatBody.scrollHeight, 50);
+            } catch(err) {
+                console.error("Xatolik viewChat:", err);
+            }
+        }
+
+        // Orders Loading Functionality
+        async function loadOrders() {
+            try {
+                const res = await fetch('/api/orders');
+                const allOrders = await res.json();
+                
+                const orders = allOrders.filter(o => !o.isChat && !String(o.id || o._id).startsWith('#MSG-'));
+                const ordersList = document.getElementById('orders-list');
+                ordersList.innerHTML = '';
+
+                if (orders.length === 0) {
+                    const sidebarBadge = document.getElementById('orders-badge');
+                    if (sidebarBadge) sidebarBadge.textContent = '0';
+                    ordersList.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--text-light);">Hozircha buyurtmalar yo'q</td></tr>`;
+                    return;
+                }
+
+                const sidebarBadge = document.getElementById('orders-badge');
+                if (sidebarBadge) sidebarBadge.textContent = orders.length;
+
+                // Sync to localStorage for other pages that might expect it
+                localStorage.setItem('qogozOrders', JSON.stringify(orders));
+
+                orders.forEach(order => {
+                    const tr = document.createElement('tr');
+                    tr.style.cursor = 'pointer';
+                    const orderId = order._id || order.id;
+                    tr.onclick = (e) => {
+                        if (!e.target.closest('.action-btn')) {
+                            viewChat(orderId);
+                        }
+                    };
+                    tr.innerHTML = `
+                        <td>${String(orderId).substring(0, 8)}...</td>
+                        <td>
+                            <div class="client-info">
+                                <strong>${order.name}</strong>
+                                <span>${order.phone}</span>
+                            </div>
+                        </td>
+                        <td>${order.date}</td>
+                        <td><div style="max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${order.address || "Noma'lum"}">${order.address || "Noma'lum"}</div></td>
+                        <td>${order.message ? 'Maxsus xabar orqali' : "Noma'lum"}</td>
+                        <td>Kelishilgan narx</td>
+                        <td><span class="status pending">${order.status || 'Kutilmoqda'}</span></td>
+                        <td>
+                            <button class="action-btn view" title="Xabarni o'qish" onclick="viewChat('${orderId}')"><i class="fas fa-eye"></i></button>
+                            <button class="action-btn" title="Holatni o'zgartirish" style="color: var(--success);" onclick="this.parentElement.previousElementSibling.innerHTML = '<span class=&quot;status completed&quot;>Bajarildi</span>'"><i class="fas fa-check-circle"></i></button>
+                            <button class="action-btn" title="O'chirish" style="color: var(--danger);" onclick="deleteOrder('${orderId}')"><i class="fas fa-trash"></i></button>
+                        </td>
+                    `;
+                    ordersList.appendChild(tr);
+                });
+            } catch (err) {
+                console.error("Orders load failed:", err);
+            }
+        }
+
+        async function deleteOrder(id) {
+            if (confirm("Haqiqatan ham bu buyurtmani o'chirib tashlamoqchimisiz?")) {
+                try {
+                    await fetch('/api/orders/' + encodeURIComponent(id), { method: 'DELETE' });
+                    loadOrders();
+                } catch (err) {
+                    console.error("Delete order failed:", err);
+                }
+            }
+        }
+
+        function loadNotifications() {
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            const modalBody = document.querySelector('.modal-body');
+
+            if (notifs.length === 0) {
+                modalBody.innerHTML = `<div style="padding: 20px; text-align: center; color: var(--text-light);">Yangi bildirishnomalar yo'q</div>`;
+                return;
+            }
+
+            modalBody.innerHTML = '';
+            notifs.forEach(notif => {
+                const item = document.createElement('div');
+                item.className = `notification-item ${notif.unread ? 'unread' : ''}`;
+                item.innerHTML = `
+                    <div class="notif-icon ${notif.title.includes('buyurtma') ? 'order' : 'message'}">
+                        <i class="fas ${notif.title.includes('buyurtma') ? 'fa-shopping-cart' : 'fa-comment-dots'}"></i>
+                    </div>
+                    <div class="notif-details">
+                        <p><strong>${notif.title}</strong> ${notif.body}</p>
+                        <span class="notif-time">${notif.time}</span>
+                    </div>
+                `;
+                modalBody.appendChild(item);
+            });
+        }
+
+        function updateNotificationBadge() {
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            const unreadCount = notifs.filter(n => n.unread).length;
+            const badgeList = document.querySelectorAll('.notif-badge');
+
+            badgeList.forEach(badge => {
+                if (unreadCount > 0) {
+                    badge.textContent = unreadCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            });
+        }
+
+        // Initialize display
+        checkAuth();
+        loadOrders();
+        loadNotifications();
+        updateNotificationBadge();
+    </script>
+</body>
+
+</html>

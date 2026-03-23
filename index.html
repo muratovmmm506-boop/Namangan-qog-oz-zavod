@@ -1,0 +1,1211 @@
+    <!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Qog'oz zavod - Yuqori sifatli qog'oz mahsulotlari ishlab chiqarish zavodi.">
+    <title>Namangan qog'oz zavod | Sifatli Qog'oz Mahsulotlari</title>
+    <link rel="stylesheet" href="index.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Header Search */
+        .header-search-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .header-search-icon {
+            background: none;
+            border: none;
+            color: var(--text, #333);
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .header-search-icon:hover {
+            background: rgba(0, 0, 0, 0.07);
+        }
+
+        .header-search-box {
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid var(--primary, #FF8200);
+            border-radius: 30px;
+            padding: 4px 6px 4px 16px;
+            box-shadow: 0 4px 20px rgba(255, 130, 0, 0.15);
+            width: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .header-search-box.open {
+            width: 220px;
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .header-search-box input {
+            border: none;
+            outline: none;
+            font-size: 0.9rem;
+            font-family: 'Outfit', sans-serif;
+            width: 100%;
+            background: transparent;
+            color: #222;
+        }
+
+        .header-search-close {
+            background: none;
+            border: none;
+            color: #aaa;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            transition: color 0.2s;
+        }
+
+        .header-search-close:hover {
+            color: #e00;
+        }
+
+        /* Customer Chat Widget Styles */
+        .customer-chat-widget {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .chat-toggle-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary, #FF8200);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 130, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .chat-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff4d4d;
+            color: white;
+            font-size: 0.75rem;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid white;
+        }
+
+        .customer-chat-window {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 320px;
+            height: 450px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .chat-window-header {
+            background: var(--primary, #FF8200);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-window-body {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #e5ddd5;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cust-msg {
+            max-width: 85%;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .cust-msg:hover .msg-delete-btn {
+            opacity: 1;
+        }
+
+        .cust-msg.sent {
+            align-self: flex-end;
+            background: #effdde;
+            color: #333;
+        }
+
+        .cust-msg.received {
+            align-self: flex-start;
+            background: #fff;
+            color: #333;
+        }
+
+        .cust-msg strong {
+            display: block;
+            margin-bottom: 2px;
+            font-size: 0.75rem;
+            color: #448afc;
+        }
+
+        .cust-msg .msg-time {
+            display: block;
+            font-size: 0.65rem;
+            color: #999;
+            margin-top: 4px;
+            margin-left: 8px;
+            float: right;
+        }
+
+        .msg-delete-btn {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #ff4d4d;
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .emoji-picker {
+            position: absolute;
+            bottom: 60px;
+            left: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            display: none;
+            grid-template-columns: repeat(5, 1fr);
+            padding: 10px;
+            gap: 5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1100;
+        }
+
+        .emoji-picker.show {
+            display: grid;
+        }
+
+        .emoji-item {
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background 0.2s;
+        }
+
+        .emoji-item:hover {
+            background: #f0f0f0;
+        }
+
+        #customerChatWindow.open {
+            display: flex;
+        }
+
+        .chat-window-footer {
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-window-footer input {
+            flex: 1;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .chat-window-footer input:focus {
+            border-color: var(--primary, #FF8200);
+        }
+
+        .chat-window-footer button {
+            background: var(--primary, #FF8200);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .chat-window-footer button:hover {
+            background: #e67500;
+        }
+
+        @media (max-width: 480px) {
+            .customer-chat-window {
+                width: calc(100vw - 40px);
+                bottom: 70px;
+                right: -10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="boshsahifa.png" alt="Qog'oz Zavod" class="logo-img"> QOG'OZ <span>ZAVOD</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#home">Asosiy</a></li>
+                    <li><a href="#about">Biz haqimizda</a></li>
+                    <li><a href="#gallery">Mahsulotlar</a></li>
+                    <li><a href="#partners">Hamkorlar</a></li>
+                    <li><a href="#contact-form">Aloqa</a></li>
+                </ul>
+            </nav>
+
+            <!-- Header Search -->
+            <div class="header-search-wrap" id="headerSearchWrap">
+                <div class="header-search-box" id="headerSearchBox">
+                    <input type="text" id="headerSearchInput" placeholder="Qidirish... (/admin)" autocomplete="off">
+                    <button class="header-search-close" id="headerSearchClose"><i class="fas fa-times"></i></button>
+                </div>
+                <button class="header-search-icon" id="headerSearchToggle" title="Qidirish">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <a href="#contact" class="btn btn-primary d-none-mobile">Buyurtma berish</a>
+            <button class="mobile-menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Side Menu -->
+    <div class="side-menu" id="sideMenu">
+        <div class="side-menu-overlay"></div>
+        <div class="side-menu-content">
+            <div class="side-menu-header">
+                <a href="#" class="logo">
+                    <img src="boshsahifa.png" alt="Qog'oz Zavod" class="logo-img"> <span>QOG'OZ ZAVOD</span>
+                </a>
+                <button class="side-menu-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="side-menu-body">
+                <nav class="side-nav-links">
+                    <a href="#home"><i class="fas fa-home"></i> Asosiy</a>
+                    <a href="#about"><i class="fas fa-info-circle"></i> Biz haqimizda</a>
+                    <a href="#services"><i class="fas fa-box"></i> Mahsulotlar</a>
+                    <a href="#gallery"><i class="fas fa-images"></i> Galereya</a>
+                    <a href="#partners"><i class="fas fa-handshake"></i> Hamkorlar</a>
+                    <a href="#contact-form"><i class="fas fa-envelope"></i> Aloqa</a>
+                </nav>
+
+                <p class="side-menu-desc">
+                    Yuqori sifatli qog'oz mahsulotlari bilan ishingizni yengillashtiring,
+                    xarajatlarni kamaytirib samaradorlikni oshiring!
+                </p>
+
+                <div class="side-menu-contact">
+                    <h3>Bog'lanish</h3>
+                    <div class="side-contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Namangan shahar, Davlatobod tumani, xalqaro dostligi MFY, Quruvchilar ko'chasi</span>
+                    </div>
+                    <div class="side-contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>info@qogozzavod.uz</span>
+                    </div>
+                    <div class="side-contact-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Dush-Jum: 09:00 - 18:00</span>
+                    </div>
+                    <div class="side-contact-item">
+                        <i class="fas fa-phone-alt"></i>
+                        <span>+998 94 878 50 05</span>
+                    </div>
+                </div>
+
+                <a href="#about" class="btn btn-primary side-cta">
+                    To'liq ma'lumot <i class="fas fa-arrow-right"></i>
+                </a>
+
+                <div class="side-social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-telegram-plane"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero -->
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-pattern">
+                <svg width="100%" height="100%">
+                    <pattern id="pattern-cubes" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M0 40 L40 0 M-10 10 L10 -10 M30 50 L50 30" stroke="rgba(255, 130, 0, 0.05)"
+                            stroke-width="1" fill="none" />
+                    </pattern>
+                    <rect width="100%" height="100%" fill="url(#pattern-cubes)" />
+                </svg>
+            </div>
+            <div class="container hero-grid">
+                <div class="hero-content">
+                    <h1 class="animate-up">Sifatli Qog'oz - <br><span class="text-gradient">Mukammal Kelajak</span></h1>
+                    <p class="animate-up delay-1">Biz eng ilg'or texnologiyalar yordamida har qanday ehtiyojingiz uchun
+                        premium darajadagi qog'oz mahsulotlarini ishlab chiqaramiz. Sifatimiz - ishonchingiz kafolati.
+                    </p>
+                    <div class="hero-btns animate-up delay-2">
+                        <a href="#services" class="btn btn-primary">Mahsulotlar <i class="fas fa-box-open"></i></a>
+                        <a href="#about" class="btn btn-outline">Biz haqimizda <i class="fas fa-info-circle"></i></a>
+                    </div>
+                </div>
+                <div class="hero-image-container animate-up delay-1">
+                    <div class="hero-image-wrapper">
+                        <img src="davtar.png" alt="Stationery Product" class="hero-main-img">
+                        <div class="hero-circle-decoration"></div>
+                    </div>
+                    <div class="hero-image-badge">
+                        <span>Yangi</span>
+                        <strong>To'plam</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="container">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-calendar-check"></i></div>
+                        <h2 class="counter">1800</h2>
+                        <p>Yillik Tajriba</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-tasks"></i></div>
+                        <h2 class="counter">500</h2>
+                        <p>Loyihalar</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-icon"><i class="fas fa-user-tie"></i></div>
+                        <h2 class="counter">1100</h2>
+                        <p>Yirik Xodimlar</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="section-padding" id="about">
+            <div class="container">
+                <div class="about-grid">
+                    <div class="about-image animate-up">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080078-y.jpg"
+                            alt="Qog'oz zavod ishlab chiqarish sexi">
+                    </div>
+                    <div class="about-content animate-up delay-1">
+                        <h5 class="text-primary"
+                            style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Kompaniya
+                            Haqida</h5>
+                        <h2>O'zbekistondagi Qog'oz <br>Ishlab chiqarish Yetakchisi</h2>
+                        <p>Qog'oz Zavod - bu faqat fabrika emas, balki innovatsiyalar va yuqori texnologiyalar
+                            markazidir. Biz har bir varoqda yuqori sifat va aniqlikni ta'minlash uchun tinimsiz
+                            ishlaymiz.</p>
+
+                        <div class="about-features">
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-check"></i></div>
+                                <div><strong>Yuqori Sifat</strong><br><small>Xalqaro standartlar asosida</small></div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-leaf"></i></div>
+                                <div><strong>Ekologik Toza</strong><br><small>Tabiatni asrash tarafdori</small></div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                                <div><strong>Tezkor Yetkazish</strong><br><small>O'z vaqtida va ishonchli</small></div>
+                            </div>
+                            <div class="feature-item">
+                                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                                <div><strong>Mijozlarga E'tibor</strong><br><small>Har bir mijoz biz uchun aziz</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services -->
+        <section class="section-padding" id="services" style="background-color: var(--bg-light);">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 60px;" class="animate-up">
+                    <h5 class="text-primary"
+                        style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">Bizning Mahsulotlar
+                    </h5>
+                    <h2 style="font-size: 3.5rem; font-weight: 900; line-height: 1.1;">Sifat – Bizning<br><span>Asosiy
+                            Maqsadimiz</span></h2>
+                </div>
+
+                <div class="services-grid">
+                    <div class="service-card animate-up">
+                        <div class="service-number">01</div>
+                        <div class="service-icon"><i class="fas fa-file-alt"></i></div>
+                        <h3>Premium Ofis Qog'ozi</h3>
+                        <p>Eng yuqori oqlik darajasiga ega, har qanday printerda muammosiz ishlaydi.
+                            .</p>
+                        <ul class="service-list">
+                            <li><i class="fas fa-check"></i> 100% oqlik</li>
+                            <li><i class="fas fa-check"></i> Changsiz texnologiya</li>
+                        </ul>
+                        <a href="#contact" class="btn-text">Buyurtma berish <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="service-card animate-up delay-1">
+                        <div class="service-number">02</div>
+                        <div class="service-icon"><i class="fas fa-shipping-fast"></i></div>
+                        <h3>Sanoat Kartonlari</h3>
+                        <p>Og'ir xalqaro eksport yuklari uchun mo'ljallangan, ko'p qatlamli yuqori chidamlilikdagi
+                            kartonlar.</p>
+                        <ul class="service-list">
+                            <li><i class="fas fa-check"></i> 3 va 5 qatlamli</li>
+                            <li><i class="fas fa-check"></i> Namlikka chidamli</li>
+                        </ul>
+                        <a href="#contact" class="btn-text">Batafsil <i class="fas fa-arrow-right"></i></a>
+                    </div>
+
+                    <div class="service-card animate-up delay-2">
+                        <div class="service-number">03</div>
+                        <div class="service-icon"><i class="fas fa-scroll"></i></div>
+                        <h3>Rulonli Qog'ozlar</h3>
+                        <p>Bosmaxonalar va katta hajmdagi ishlab chiqarishlar uchun maxsus rulonli qog'oz mahsulotlari.
+                        </p>
+                        <ul class="service-list">
+                            <li><i class="fas fa-check"></i> Istalgan kenglikda</li>
+                            <li><i class="fas fa-check"></i> Yuqori zichlik</li>
+                        </ul>
+                        <a href="#contact" class="btn-text">Bog'lanish <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section class="section-padding">
+            <div class="container">
+                <div class="choose-grid">
+                    <div class="choose-content animate-up">
+                        <h5 class="text-primary">NEGA BIZNI TANLASHADI?</h5>
+                        <h2 style="font-size: 3rem; margin: 15px 0 30px;">Ishonchli Hamkor – <br>Muvaffaqiyat Garovi
+                        </h2>
+                        <div class="choose-features">
+                            <div class="choose-item">
+                                <div class="choose-icon"><i class="fas fa-medal"></i></div>
+                                <div class="choose-text">
+                                    <h4>Sifat Kafolati</h4>
+                                    <p>Har bir mahsulot qat'iy laboratoriya tekshiruvidan o'tkaziladi.</p>
+                                </div>
+                            </div>
+                            <div class="choose-item">
+                                <div class="choose-icon"><i class="fas fa-handshake"></i></div>
+                                <div class="choose-text">
+                                    <h4>Individual Yondashuv</h4>
+                                    <p>Har bir mijozning talabi biz uchun ustuvor vazifadir.</p>
+                                </div>
+                            </div>
+                            <div class="choose-item">
+                                <div class="choose-icon"><i class="fas fa-truck-loading"></i></div>
+                                <div class="choose-text">
+                                    <h4>Tezkor Logistika</h4>
+                                    <p>O'z avtoparkimiz yordamida yuklarni manzilingizga tezkor yetkazamiz.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="choose-stats animate-up delay-1">
+                        <div class="stats-card">
+                            <div class="stats-card-inner">
+                                <h3>85%</h3>
+                                <p>Mijozlarimiz bizdan mamnun</p>
+                            </div>
+                            <div class="stats-card-bg"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section class="section-padding" id="contact-form" style="background-color: var(--bg-light);">
+            <div class="container">
+                <div class="contact-form-grid">
+                    <div class="contact-form-info animate-up">
+                        <h5 class="text-primary">ALOHA BOG'LANING</h5>
+                        <h2>Savollaringiz bormi? <br>Biz bilan bog'laning!</h2>
+                        <p>Ma'lumotlaringizni qoldiring, mutaxassislarimiz 15 daqiqa ichida sizga qo'ng'iroq qilishadi.
+                        </p>
+
+                        <div class="direct-contacts">
+                            <div class="contact-method">
+                                <i class="fas fa-phone-alt"></i>
+                                <div>
+                                    <span>Telefon orqali:</span>
+                                    <strong>+998 94 878 50 05</strong>
+                                </div>
+                            </div>
+                            <div class="contact-method">
+                                <i class="fab fa-telegram-plane"></i>
+                                <div>
+                                    <span>Telegram:</span>
+                                    <strong>@qogozzavod_uz</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-form-card animate-up delay-1">
+                        <form id="orderForm">
+                            <div class="form-group">
+                                <label>Ismingiz</label>
+                                <input type="text" id="orderName" placeholder="Ismingizni kiriting" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Telefon raqamingiz</label>
+                                <input type="tel" id="orderPhone" placeholder="+998 __ ___ __ __" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Dastavka manzili</label>
+                                <input type="text" id="orderAddress" placeholder="Viloyat, tuman, ko'cha, uy raqami"
+                                    required>
+                            </div>
+                            <div class="form-group">
+                                <label>Xabaringiz / Buyurtmangiz</label>
+                                <textarea id="orderMessage" rows="4"
+                                    placeholder="Qanday mahsulot qiziqtirmoqda?"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Xabar yuborish <i
+                                    class="fas fa-paper-plane"></i></button>
+                        </form>
+                        <script>
+                            // Phone formatting
+                            const phoneInput = document.getElementById('orderPhone');
+                            phoneInput.addEventListener('input', function (e) {
+                                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                                if (!x[1]) {
+                                    e.target.value = '+998 ';
+                                    return;
+                                }
+                                if (!e.target.value.startsWith('+998')) {
+                                    x = ('998' + x[0]).match(/(\d{0,3})(\d{0,2})(\d{0,3})(\d{0,2})(\d{0,2})/);
+                                }
+                                e.target.value = !x[2] ? '+' + x[1] : '+' + x[1] + ' ' + x[2] + (x[3] ? ' ' + x[3] : '') + (x[4] ? ' ' + x[4] : '') + (x[5] ? ' ' + x[5] : '');
+                            });
+
+                            // Ensure it starts with +998 on focus
+                            phoneInput.addEventListener('focus', function (e) {
+                                if (!e.target.value) e.target.value = '+998 ';
+                            });
+
+                            document.getElementById('orderForm').addEventListener('submit', function (e) {
+                                e.preventDefault();
+                                const name = document.getElementById('orderName').value;
+                                const phone = document.getElementById('orderPhone').value;
+                                const address = document.getElementById('orderAddress').value;
+                                const message = document.getElementById('orderMessage').value;
+
+                                if (name && phone && address) {
+                                    const date = new Date();
+                                    const dateStr = date.getDate().toString().padStart(2, '0') + '-' +
+                                        (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                                        date.getFullYear() + ' ' +
+                                        date.getHours().toString().padStart(2, '0') + ':' +
+                                        date.getMinutes().toString().padStart(2, '0');
+
+                                    const newOrder = {
+                                        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+                                        name: name,
+                                        phone: phone,
+                                        address: address,
+                                        message: message,
+                                        date: dateStr,
+                                        status: 'Kutilmoqda'
+                                    };
+
+                                    // Tekshirish: Agar fayl sifatida ochilgan bo'lsa (Safari xatoligini oldini olish)
+                                    if (window.location.protocol === 'file:' || window.location.hostname === '') {
+                                        alert("DIQQAT! Saytni oddiy fayl sifatida ochgansiz (file://).\n\nXabarlarni Telegramga yuborish uchun quyidagi manzilga kiring:\n👉 http://localhost:5001\n\n(Avval terminalda serverni ishga tushiring!)");
+                                        return;
+                                    }
+
+                                    // Backend API orqali yuborish
+                                    fetch('/api/orders', {
+                                        method: 'POST',
+                                        headers: { 'Content-Type': 'application/json' },
+                                        body: JSON.stringify(newOrder)
+                                    }).then(async res => {
+                                        if (!res.ok) {
+                                            const errorData = await res.json();
+                                            throw new Error(errorData.error || "Server xatosi");
+                                        }
+                                        return res.json();
+                                    }).then(data => {
+                                        console.log("Buyurtma yuborildi:", data);
+                                        
+                                        // localStorage'ga saqlash
+                                        try {
+                                            const orders = JSON.parse(localStorage.getItem('qogozOrders') || '[]');
+                                            orders.unshift(newOrder);
+                                            localStorage.setItem('qogozOrders', JSON.stringify(orders));
+                                            localStorage.setItem('qogozUserPhone', phone);
+                                            localStorage.setItem('qogozUserName', name);
+                                        } catch(e) {}
+
+                                        alert("✅ Rahmat! Xabaringiz muvaffaqiyatli yuborildi. Telegram orqali admin bilan bog'lanishingiz mumkin.");
+                                        document.getElementById('orderForm').reset();
+                                    }).catch(err => {
+                                        console.error("Xatolik:", err);
+                                        let msg = "Xatolik yuz berdi.";
+                                        if (err.message.includes("pattern") || err.message.includes("fetch")) {
+                                            msg = "Server bilan bog'lanishda xatolik!\n\nIltimos, serverni terminalda ishga tushiring (node backend/index.js) va saytni http://localhost:5001 manzili orqali oching.";
+                                        } else {
+                                            msg = "Xatolik: " + err.message;
+                                        }
+                                        alert(msg);
+                                    });
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Product Showcase Section -->
+        <section class="section-padding" id="gallery">
+            <div class="container">
+                <div style="text-align: center; margin-bottom: 60px;" class="animate-up">
+                    <h5 class="text-primary"
+                        style="text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">zavodning
+                    </h5>
+                    <h2 style="font-size: 3rem; font-weight: 900;">Tashqi ko'rinishi</h2>
+                </div>
+                <div class="product-gallery">
+                    <div class="gallery-item animate-up">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080089-y.jpg"
+                            alt="Ishchilar ishlab chiqarish jarayonida">
+                        <div class="gallery-overlay">
+                            <span>Ishlab Chiqarish Jarayoni</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up delay-1">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080088-y.jpg"
+                            alt="Zavod sexi panoramasi">
+                        <div class="gallery-overlay">
+                            <span>Zamonaviy Tsex</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up delay-2">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080080-y.jpg"
+                            alt="Qog'oz rulonlari ombori">
+                        <div class="gallery-overlay">
+                            <span>Tayyor Mahsulotlar Ombori</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080083-y.jpg"
+                            alt="Zamonaviy uskunalar">
+                        <div class="gallery-overlay">
+                            <span>Zamonaviy Uskunalar</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up delay-1">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080082-y.jpg"
+                            alt="Ishlab chiqarish mashinalari">
+                        <div class="gallery-overlay">
+                            <span>Aniq Ishlov Berish</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up delay-2">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080085-y.jpg" alt="Sifat nazorati">
+                        <div class="gallery-overlay">
+                            <span>Sifat Nazorati</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080087-y.jpg" alt="Kesish stanogi">
+                        <div class="gallery-overlay">
+                            <span>Kesish va Shakllantirish</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up delay-1">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080078-y.jpg"
+                            alt="Umumiy zavod ko'rinishi">
+                        <div class="gallery-overlay">
+                            <span>Zavod Umumiy Ko'rinishi</span>
+                        </div>
+                    </div>
+                    <div class="gallery-item animate-up delay-2">
+                        <img src="image/telegram-cloud-photo-size-2-5199745175751080090-y.jpg"
+                            alt="Ishlab chiqarish liniyasi">
+                        <div class="gallery-overlay">
+                            <span>Ishlab Chiqarish Liniyasi</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Partners Section -->
+        <section class="partners-section" id="partners">
+            <div class="partners-marquee">
+                <div class="partners-track">
+                    <!-- Original Set -->
+                    <div class="partner-logo">
+                        <img src="Icon Image/nam-q.svg" alt="Namangan Qog'ozi">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/Nam-sement.svg" alt="Namangan Sement">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/les-b.svg" alt="Leasing Bonus">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/nam-q.svg" alt="Namangan Qog'ozi">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/les-b.svg" alt="Leasing Bonus">
+                    </div>
+
+                    <!-- Duplicated Set for Infinite Scroll -->
+                    <div class="partner-logo">
+                        <img src="Icon Image/nam-q.svg" alt="Namangan Qog'ozi">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/Nam-sement.svg" alt="Namangan Sement">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/les-b.svg" alt="Leasing Bonus">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/nam-q.svg" alt="Namangan Qog'ozi">
+                    </div>
+                    <div class="partner-logo">
+                        <img src="Icon Image/les-b.svg" alt="Leasing Bonus">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <div class="footer-top-dot">
+        <div class="dot-inner"></div>
+    </div>
+    <footer id="contact" class="modern-footer">
+        <div class="container relative">
+            <div class="footer-contacts">
+                <div class="footer-contact-box animate-up">
+                    <div class="footer-contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="footer-contact-text">
+                        <small>Manzil</small>
+                        <strong>Namangan shahar, Davlatobod tumani, Xalqlar do'sligi MFY, Quruvchilar ko'chasi
+                            50-uy</strong>
+                    </div>
+                </div>
+
+                <div class="footer-contact-box animate-up delay-1">
+                    <div class="footer-contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="footer-contact-text">
+                        <small>email</small>
+                        <strong>nambum2009@gmail.com</strong>
+                    </div>
+                </div>
+
+                <div class="footer-contact-box animate-up delay-2">
+                    <div class="footer-contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="footer-contact-text">
+                        <small>Telefon raqam</small>
+                        <strong>+998 94 878 50 05</strong>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="footer-divider">
+
+            <div class="footer-bottom animate-up delay-3">
+                <p>&copy; All Copyright 2026 by <span>Qog'oz Zavod</span> | <a href="admin.html"
+                        style="color: inherit; text-decoration: none; margin-left: 10px;"><i
+                            class="fas fa-user-shield"></i> Admin Panel</a></p>
+            </div>
+
+            <a href="#" class="scroll-top-btn">
+                <i class="fas fa-arrow-up"></i>
+            </a>
+        </div>
+    </footer>
+
+
+
+    <!-- Customer Chat Widget -->
+    <div class="customer-chat-widget" id="customerChat">
+        <div class="customer-chat-window" id="customerChatWindow">
+            <div class="chat-window-header">
+                <span><i class="fas fa-comments"></i> Admin bilan muloqot</span>
+                <button id="closeChatWindow" style="background:none; border:none; color:white; cursor:pointer;"><i
+                        class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-window-body" id="customerChatBody">
+                <div style="text-align:center; padding:20px; color:#999; font-size:0.85rem;">
+                    Xabar yuborish uchun ismingiz va nomeringizni kiriting.
+                </div>
+            </div>
+            <div id="emojiPicker" class="emoji-picker">
+                <span class="emoji-item">😊</span>
+                <span class="emoji-item">😂</span>
+                <span class="emoji-item">👍</span>
+                <span class="emoji-item">🔥</span>
+                <span class="emoji-item">❤️</span>
+                <span class="emoji-item">🙏</span>
+                <span class="emoji-item">😮</span>
+                <span class="emoji-item">😭</span>
+                <span class="emoji-item">✅</span>
+                <span class="emoji-item">🤝</span>
+            </div>
+            <div class="chat-window-footer">
+                <button id="emojiBtn" style="background:none; color:#999; border:none; width:auto;"><i
+                        class="far fa-smile"></i></button>
+                <input type="text" id="custChatInput" placeholder="Xabar yozing..." autocomplete="off">
+                <button id="custSendBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+        <button class="chat-toggle-btn" id="chatToggleBtn">
+            <i class="fas fa-comment-dots"></i>
+            <span class="chat-badge" id="customerChatBadge">0</span>
+        </button>
+    </div>
+
+    <script>
+        const chatToggleBtn = document.getElementById('chatToggleBtn');
+        const customerChatWindow = document.getElementById('customerChatWindow');
+        const closeChatWindow = document.getElementById('closeChatWindow');
+        const customerChatBody = document.getElementById('customerChatBody');
+        const customerChatBadge = document.getElementById('customerChatBadge');
+        const custChatInput = document.getElementById('custChatInput');
+        const custSendBtn = document.getElementById('custSendBtn');
+        const emojiBtn = document.getElementById('emojiBtn');
+        const emojiPicker = document.getElementById('emojiPicker');
+
+        emojiBtn.addEventListener('click', () => {
+            emojiPicker.classList.toggle('show');
+        });
+
+        document.querySelectorAll('.emoji-item').forEach(e => {
+            e.addEventListener('click', () => {
+                custChatInput.value += e.textContent;
+                emojiPicker.classList.remove('show');
+                custChatInput.focus();
+            });
+        });
+
+        chatToggleBtn.addEventListener('click', () => {
+            customerChatWindow.classList.toggle('open');
+            if (customerChatWindow.classList.contains('open')) {
+                customerChatBadge.style.display = 'none';
+                updateCustomerChat();
+                setTimeout(() => customerChatBody.scrollTop = customerChatBody.scrollHeight, 100);
+            }
+        });
+
+        closeChatWindow.addEventListener('click', () => {
+            customerChatWindow.classList.remove('open');
+            emojiPicker.classList.remove('show');
+        });
+
+        custSendBtn.addEventListener('click', () => {
+            sendCustomerMessage();
+            emojiPicker.classList.remove('show');
+        });
+        custChatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendCustomerMessage();
+                emojiPicker.classList.remove('show');
+            }
+        });
+
+        function sendCustomerMessage() {
+            const text = custChatInput.value.trim();
+            const phone = localStorage.getItem('qogozUserPhone');
+            const name = localStorage.getItem('qogozUserName') || 'Mijoz';
+
+            if (!text) return;
+            if (!phone) {
+                alert("Iltimos, avval tepadan buyurtma formasini to'ldiring (Ism va Nomer uchun)");
+                return;
+            }
+
+            const date = new Date();
+            const dateStr = date.getDate().toString().padStart(2, '0') + '-' +
+                (date.getMonth() + 1).toString().padStart(2, '0') + '-' +
+                date.getFullYear() + ' ' +
+                date.getHours().toString().padStart(2, '0') + ':' +
+                date.getMinutes().toString().padStart(2, '0');
+
+            const newMsg = {
+                id: '#MSG-' + Math.floor(1000 + Math.random() * 9000),
+                name: name,
+                phone: phone,
+                address: 'Chat orqali yozildi',
+                message: text,
+                date: dateStr,
+                status: 'Kutilmoqda',
+                isChat: true
+            };
+
+            const orders = JSON.parse(localStorage.getItem('qogozOrders') || '[]');
+            orders.unshift(newMsg);
+            localStorage.setItem('qogozOrders', JSON.stringify(orders));
+
+            custChatInput.value = '';
+            emojiPicker.classList.remove('show');
+            updateCustomerChat();
+
+            // Notification for admin
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            notifs.unshift({
+                title: 'Yangi chat xabari!',
+                body: `${name} (${phone}) dan yangi xabar.`,
+                time: dateStr,
+                unread: true
+            });
+            localStorage.setItem('qogozNotifications', JSON.stringify(notifs));
+        }
+
+        function deleteMsg(orderId, replyText, timestamp) {
+            if (!confirm("Haqiqatan ham bu xabarni o'chirmoqchimisiz?")) return;
+
+            const orders = JSON.parse(localStorage.getItem('qogozOrders') || '[]');
+            const oIdx = orders.findIndex(o => o.id === orderId);
+            if (oIdx === -1) return;
+
+            if (!replyText) {
+                // Main message
+                orders.splice(oIdx, 1);
+            } else {
+                // Reply
+                if (orders[oIdx].replies) {
+                    orders[oIdx].replies = orders[oIdx].replies.filter(r => r.text !== replyText);
+                }
+            }
+
+            localStorage.setItem('qogozOrders', JSON.stringify(orders));
+            updateCustomerChat();
+        }
+
+        window.deleteMsg = deleteMsg; // Make accessible to onclick
+
+        function updateCustomerChat() {
+            const userPhone = localStorage.getItem('qogozUserPhone');
+            if (!userPhone) return;
+
+            const orders = JSON.parse(localStorage.getItem('qogozOrders') || '[]');
+            const userOrders = orders.filter(o => o.phone === userPhone).reverse(); // Oldest order first
+            if (userOrders.length === 0) {
+                customerChatBody.innerHTML = '<div style="text-align:center; padding:20px; color:#999; font-size:0.85rem;">Hozircha xabarlar yo\'q</div>';
+                return;
+            }
+
+            let messages = [];
+            let sequence = 0;
+            userOrders.forEach(o => {
+                // Customer's original message
+                messages.push({
+                    type: 'sent',
+                    text: o.message || 'Buyurtma berildi',
+                    time: o.date,
+                    timestamp: parseDate(o.date),
+                    seq: sequence++,
+                    orderId: o.id,
+                    isReply: false
+                });
+
+                // Admin replies within this order
+                if (o.replies) {
+                    o.replies.forEach(r => {
+                        const replyTimeStr = `${r.date} ${r.time}`.replace(/\./g, '-');
+                        messages.push({
+                            type: 'received',
+                            text: r.text,
+                            time: r.time,
+                            timestamp: parseDate(replyTimeStr),
+                            seq: sequence++,
+                            orderId: o.id,
+                            isReply: true
+                        });
+                    });
+                }
+            });
+
+            // Sort by timestamp, then by sequence to ensure stability
+            messages.sort((a, b) => (a.timestamp - b.timestamp) || (a.seq - b.seq));
+
+            customerChatBody.innerHTML = '';
+            messages.forEach(m => {
+                const deleteHtml = m.type === 'sent' ? `<button class="msg-delete-btn" onclick="deleteMsg('${m.orderId}', ${m.isReply ? "'" + m.text.replace(/'/g, "\\'") + "'" : 'null'}, ${m.timestamp})"><i class="fas fa-times"></i></button>` : '';
+
+                customerChatBody.innerHTML += `
+                    <div class="cust-msg ${m.type}">
+                        ${m.type === 'received' ? '<strong>Admin</strong>' : ''}
+                        ${deleteHtml}
+                        ${m.text}
+                        <span class="msg-time">${m.time}</span>
+                    </div>
+                `;
+            });
+
+            customerChatBody.scrollTop = customerChatBody.scrollHeight;
+            setTimeout(() => { customerChatBody.scrollTop = customerChatBody.scrollHeight; }, 50);
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return 0;
+            const parts = dateStr.split(/[\s\-.:/]+/);
+            if (parts.length < 5) return 0;
+            // parts: DD, MM, YYYY, HH, mm
+            return new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4]).getTime();
+        }
+
+        // Periodically check for new messages from server
+        setInterval(async () => {
+            const userPhone = localStorage.getItem('qogozUserPhone');
+            if (!userPhone || window.location.protocol === 'file:') return;
+
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                const userOrders = orders.filter(o => o.phone === userPhone);
+
+                // LocalStorage ni yangilab qo'yamiz (backup sifatida)
+                localStorage.setItem('qogozOrders', JSON.stringify(orders));
+
+                // Count total messages (messages + replies) to see if update needed
+                let currentMsgCount = customerChatBody.querySelectorAll('.cust-msg').length;
+                let totalActualMsgs = 0;
+                userOrders.forEach(o => {
+                    totalActualMsgs++; // The original message
+                    if (o.replies) totalActualMsgs += o.replies.length;
+                });
+
+                if (totalActualMsgs !== currentMsgCount) {
+                    updateCustomerChat();
+                    if (!customerChatWindow.classList.contains('open')) {
+                        customerChatBadge.textContent = '!';
+                        customerChatBadge.style.display = 'flex';
+                    }
+                }
+            } catch (err) {
+                console.error("Chat update error:", err);
+            }
+        }, 5000);
+
+        updateCustomerChat();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

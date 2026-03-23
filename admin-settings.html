@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sozlamalar | Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .settings-nav-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .settings-nav-card .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .settings-nav-card .nav-item:hover {
+            background: var(--bg-light);
+            color: var(--primary);
+        }
+
+        .settings-nav-card .nav-item.active {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .settings-nav-card .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .settings-panel {
+            display: none;
+        }
+
+        .settings-panel.active {
+            display: block;
+        }
+
+        .settings-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .settings-card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-card-header h3 {
+            font-size: 1.05rem;
+            color: var(--secondary);
+        }
+
+        .settings-card-header p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        .settings-card-header .icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .settings-card-body {
+            padding: 24px;
+        }
+
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 28px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .avatar-wrap {
+            position: relative;
+        }
+
+        .avatar-wrap img {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            object-fit: cover;
+        }
+
+        .avatar-change-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            cursor: pointer;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .form-control {
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text);
+            outline: none;
+            transition: all 0.2s;
+            background: var(--bg-light);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 130, 0, 0.1);
+        }
+
+        .form-control:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .settings-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-row .toggle-info h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--secondary);
+            margin-bottom: 3px;
+        }
+
+        .toggle-row .toggle-info p {
+            font-size: 0.82rem;
+            color: var(--text-light);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--border);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: 3px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-switch input:checked+.toggle-slider {
+            background: var(--primary);
+        }
+
+        .toggle-switch input:checked+.toggle-slider::before {
+            transform: translateX(20px);
+        }
+
+        .danger-zone {
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .danger-zone .settings-card-header {
+            background: rgba(239, 68, 68, 0.04);
+        }
+
+        .danger-zone .icon-wrap {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .danger-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.1);
+        }
+
+        .danger-row:last-child {
+            border-bottom: none;
+        }
+
+        .danger-row h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .danger-row p {
+            font-size: 0.82rem;
+            color: var(--text-light);
+            margin-top: 3px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 14px 20px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+            transform: translateX(200%);
+            transition: transform 0.4s ease;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--success);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.error {
+            border-left-color: var(--danger);
+        }
+
+        @media (max-width: 900px) {
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle" style="color: var(--success);"></i>
+        <span id="toastMsg">Saqlandi!</span>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <i class="fas fa-industry text-primary"></i> <span>QOG'OZ ZAVOD</span>
+            </a>
+            <p class="admin-badge">Admin Panel</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Boshqaruv paneli</a></li>
+                <li><a href="admin-products.html"><i class="fas fa-box"></i> Mahsulotlar</a></li>
+                <li><a href="admin-orders.html"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span class="badge"
+                            id="orders-badge">0</span></a></li>
+                <li><a href="admin-customers.html"><i class="fas fa-users"></i> Mijozlar</a></li>
+                <li><a href="#"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-settings.html" class="active"><i class="fas fa-cog"></i> Sozlamalar</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Chiqish</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Qidirish...">
+            </div>
+
+            <div class="header-actions">
+                <button class="notif-btn">
+                    <i class="far fa-bell"></i>
+                    <span class="notif-badge">0</span>
+                </button>
+                <div class="user-profile">
+                    <img id="header-avatar"
+                        src="https://ui-avatars.com/api/?name=Admin+User&background=FF8200&color=fff" alt="Admin">
+                    <div class="user-info">
+                        <strong id="header-name">Admin User</strong>
+                        <span>Boshqaruvchi</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="page-title">
+                <h1>Sozlamalar</h1>
+                <p>Profil, xavfsizlik va bildirishnoma sozlamalari</p>
+            </div>
+
+            <div class="settings-grid">
+                <!-- Settings Navigation -->
+                <div class="settings-nav-card">
+                    <button class="nav-item active" onclick="showPanel('profile', this)">
+                        <i class="fas fa-user"></i> Profil
+                    </button>
+                    <button class="nav-item" onclick="showPanel('security', this)">
+                        <i class="fas fa-lock"></i> Xavfsizlik
+                    </button>
+                    <button class="nav-item" onclick="showPanel('notifications', this)">
+                        <i class="fas fa-bell"></i> Bildirishnomalar
+                    </button>
+                    <button class="nav-item" onclick="showPanel('appearance', this)">
+                        <i class="fas fa-palette"></i> Ko'rinish
+                    </button>
+                    <button class="nav-item" onclick="showPanel('danger', this)">
+                        <i class="fas fa-exclamation-triangle"></i> Xavfli zona
+                    </button>
+                </div>
+
+                <!-- Settings Panels -->
+                <div>
+
+                    <!-- Profile Panel -->
+                    <div class="settings-panel active" id="panel-profile">
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div class="icon-wrap"><i class="fas fa-user"></i></div>
+                                <div>
+                                    <h3>Shaxsiy Ma'lumotlar</h3>
+                                    <p>Ism, familiya va email manzilini yangilang</p>
+                                </div>
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="avatar-section">
+                                    <div class="avatar-wrap">
+                                        <img id="profile-avatar" src="" alt="Avatar">
+                                        <!-- Yashirin fayl input -->
+                                        <input type="file" id="avatar-file-input" accept="image/*" style="display:none;"
+                                            onchange="handleAvatarUpload(event)">
+                                        <div class="avatar-change-btn" title="Rasmni o'zgartirish"
+                                            onclick="document.getElementById('avatar-file-input').click()">
+                                            <i class="fas fa-camera"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <strong id="profile-full-name" style="font-size: 1.2rem;"></strong>
+                                        <p id="profile-email-display"
+                                            style="color: var(--text-light); margin-top: 4px;"></p>
+                                        <p style="font-size: 0.82rem; color: var(--text-light); margin-top: 6px;">
+                                            <i class="fas fa-shield-alt text-primary"></i> Boshqaruvchi
+                                        </p>
+                                        <button class="btn"
+                                            onclick="document.getElementById('avatar-file-input').click()"
+                                            style="margin-top: 10px; font-size: 0.82rem; padding: 7px 14px; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+                                            <i class="fas fa-upload"></i> Rasm yuklash
+                                        </button>
+                                        <p id="avatar-upload-hint"
+                                            style="font-size: 0.78rem; color: var(--text-light); margin-top: 6px;">JPG,
+                                            PNG yoki GIF • Maks 5MB</p>
+                                    </div>
+                                </div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Ismingiz</label>
+                                        <input type="text" id="profile-firstname" class="form-control"
+                                            placeholder="Ism">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Familiyangiz</label>
+                                        <input type="text" id="profile-lastname" class="form-control"
+                                            placeholder="Familiya">
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label>Email manzil</label>
+                                        <input type="email" id="profile-email" class="form-control"
+                                            placeholder="email@example.com">
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label>Telefon raqam</label>
+                                        <input type="tel" id="profile-phone" class="form-control"
+                                            placeholder="+998 __ ___ __ __">
+                                    </div>
+                                </div>
+
+                                <div class="settings-actions">
+                                    <button class="btn btn-secondary" onclick="loadProfile()">Bekor qilish</button>
+                                    <button class="btn btn-primary" onclick="saveProfile()">
+                                        <i class="fas fa-save"></i> Saqlash
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Panel -->
+                    <div class="settings-panel" id="panel-security">
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div class="icon-wrap"><i class="fas fa-lock"></i></div>
+                                <div>
+                                    <h3>Parolni O'zgartirish</h3>
+                                    <p>Hisobingizni himoya qilish uchun kuchli parol tanlang</p>
+                                </div>
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="form-grid">
+                                    <div class="form-group full-width">
+                                        <label>Joriy parol</label>
+                                        <input type="password" id="old-password" class="form-control"
+                                            placeholder="Hozirgi parolingiz">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Yangi parol</label>
+                                        <input type="password" id="new-password" class="form-control"
+                                            placeholder="Yangi parol (min 6 belgi)">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Yangi parolni tasdiqlang</label>
+                                        <input type="password" id="confirm-password" class="form-control"
+                                            placeholder="Qayta kiriting">
+                                    </div>
+                                </div>
+                                <div id="password-error"
+                                    style="color: var(--danger); font-size: 0.85rem; margin-top: 10px; display: none;">
+                                </div>
+                                <div class="settings-actions">
+                                    <button class="btn btn-primary" onclick="changePassword()">
+                                        <i class="fas fa-key"></i> Parolni yangilash
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notifications Panel -->
+                    <div class="settings-panel" id="panel-notifications">
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div class="icon-wrap"><i class="fas fa-bell"></i></div>
+                                <div>
+                                    <h3>Bildirishnoma Sozlamalari</h3>
+                                    <p>Qaysi bildirishnomalarni qabul qilishni tanlang</p>
+                                </div>
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Yangi buyurtmalar</h4>
+                                        <p>Yangi buyurtma kelganda bildirishnoma oling</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="notif-orders" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Yangi mijozlar</h4>
+                                        <p>Yangi mijoz ro'yxatdan o'tganda xabar bering</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="notif-customers" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Mahsulot ombori</h4>
+                                        <p>Mahsulot kamlashganda eslatma oling</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="notif-stock" checked>
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Tizim xabarlari</h4>
+                                        <p>Tizim yangilanishlari haqida xabar bering</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="notif-system">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: flex-end;">
+                            <button class="btn btn-primary" onclick="saveNotifications()">
+                                <i class="fas fa-save"></i> Saqlash
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Appearance Panel -->
+                    <div class="settings-panel" id="panel-appearance">
+                        <div class="settings-card">
+                            <div class="settings-card-header">
+                                <div class="icon-wrap"><i class="fas fa-palette"></i></div>
+                                <div>
+                                    <h3>Ko'rinish Sozlamalari</h3>
+                                    <p>Admin panelning rangini va ko'rinishini o'zgartiring</p>
+                                </div>
+                            </div>
+                            <div class="settings-card-body">
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label>Asosiy rang</label>
+                                    <div style="display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap;">
+                                        <div class="color-option" data-color="#FF8200"
+                                            onclick="setColor('#FF8200', this)" title="Orange"
+                                            style="width: 40px; height: 40px; border-radius: 50%; background: #FF8200; cursor: pointer; border: 3px solid #FF8200; box-shadow: 0 0 0 3px white inset;">
+                                        </div>
+                                        <div class="color-option" data-color="#6366f1"
+                                            onclick="setColor('#6366f1', this)"
+                                            style="width: 40px; height: 40px; border-radius: 50%; background: #6366f1; cursor: pointer; border: 3px solid transparent;">
+                                        </div>
+                                        <div class="color-option" data-color="#10b981"
+                                            onclick="setColor('#10b981', this)"
+                                            style="width: 40px; height: 40px; border-radius: 50%; background: #10b981; cursor: pointer; border: 3px solid transparent;">
+                                        </div>
+                                        <div class="color-option" data-color="#ef4444"
+                                            onclick="setColor('#ef4444', this)"
+                                            style="width: 40px; height: 40px; border-radius: 50%; background: #ef4444; cursor: pointer; border: 3px solid transparent;">
+                                        </div>
+                                        <div class="color-option" data-color="#3b82f6"
+                                            onclick="setColor('#3b82f6', this)"
+                                            style="width: 40px; height: 40px; border-radius: 50%; background: #3b82f6; cursor: pointer; border: 3px solid transparent;">
+                                        </div>
+                                        <div class="color-option" data-color="#8b5cf6"
+                                            onclick="setColor('#8b5cf6', this)"
+                                            style="width: 40px; height: 40px; border-radius: 50%; background: #8b5cf6; cursor: pointer; border: 3px solid transparent;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="toggle-row">
+                                    <div class="toggle-info">
+                                        <h4>Qorang'i rejim (Dark mode)</h4>
+                                        <p>Admin panelni qorang'i fonda ko'rsatish</p>
+                                    </div>
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="dark-mode" onchange="toggleDarkMode(this)">
+                                        <span class="toggle-slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Danger Zone Panel -->
+                    <div class="settings-panel" id="panel-danger">
+                        <div class="settings-card danger-zone">
+                            <div class="settings-card-header">
+                                <div class="icon-wrap"><i class="fas fa-exclamation-triangle"></i></div>
+                                <div>
+                                    <h3>Xavfli Zona</h3>
+                                    <p>Bu amallар qaytarib bo'lmaydigan o'zgarishlar qilади</p>
+                                </div>
+                            </div>
+                            <div class="danger-row">
+                                <div>
+                                    <h4>Barcha buyurtmalarni tozalash</h4>
+                                    <p>Barcha buyurtmalar va mijozlar ma'lumotlari o'chiriladi</p>
+                                </div>
+                                <button class="btn"
+                                    style="background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2);"
+                                    onclick="clearOrders()">
+                                    <i class="fas fa-trash"></i> Tozalash
+                                </button>
+                            </div>
+                            <div class="danger-row">
+                                <div>
+                                    <h4>Bildirishnomalarni tozalash</h4>
+                                    <p>Barcha bildirishnomalar o'chiriladi</p>
+                                </div>
+                                <button class="btn"
+                                    style="background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2);"
+                                    onclick="clearNotifications()">
+                                    <i class="fas fa-bell-slash"></i> Tozalash
+                                </button>
+                            </div>
+                            <div class="danger-row">
+                                <div>
+                                    <h4>Hisobdan chiqish</h4>
+                                    <p>Joriy sessiyani yakunlash</p>
+                                </div>
+                                <button class="btn"
+                                    style="background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.2);"
+                                    onclick="logout()">
+                                    <i class="fas fa-sign-out-alt"></i> Chiqish
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Modal -->
+    <div id="notifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell text-primary"></i> Bildirishnomalar</h3>
+                <button class="close-modal" id="closeNotif">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Loaded dynamically -->
+            </div>
+            <div class="modal-footer">
+                <a href="#">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-white);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            font-size: 1.1rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+        }
+
+        .modal-body {
+            max-height: 360px;
+            overflow-y: auto;
+        }
+
+        .notification-item {
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 14px;
+        }
+
+        .notification-item.unread {
+            background: rgba(255, 130, 0, 0.04);
+            border-left: 3px solid var(--primary);
+        }
+
+        .notif-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .notif-icon.order {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .notif-icon.alert {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .notif-icon.message {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .notif-details p {
+            font-size: 0.9rem;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        .notif-time {
+            font-size: 0.78rem;
+            color: var(--text-light);
+        }
+
+        .modal-footer {
+            padding: 14px 24px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .modal-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+    </style>
+
+    <script>
+        // ——— Auth & UI Init ———
+        function checkAuth() {
+            const user = JSON.parse(sessionStorage.getItem('qogozAdminUser'));
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return null;
+            }
+            const fullName = `${user.firstName} ${user.lastName}`;
+            document.getElementById('header-name').textContent = fullName;
+            const savedAvatar = localStorage.getItem('qogozAdminAvatar');
+            document.getElementById('header-avatar').src = savedAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=FF8200&color=fff`;
+            return user;
+        }
+
+        function logout() {
+            if (confirm("Hisobdan chiqmoqchimisiz?")) {
+                sessionStorage.removeItem('qogozAdminUser');
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', e => { e.preventDefault(); logout(); });
+        });
+
+        // ——— Panel Navigation ———
+        function showPanel(name, btn) {
+            document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById('panel-' + name).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        // ——— Profile ———
+        function getAvatarSrc(user) {
+            // LocalStorage'dan saqlangan rasmni tekshirish
+            const savedAvatar = localStorage.getItem('qogozAdminAvatar');
+            if (savedAvatar) return savedAvatar;
+            const fullName = `${user.firstName} ${user.lastName}`;
+            return `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=FF8200&color=fff&size=90`;
+        }
+
+        function loadProfile() {
+            const user = JSON.parse(sessionStorage.getItem('qogozAdminUser'));
+            if (!user) return;
+            const fullName = `${user.firstName} ${user.lastName}`;
+            document.getElementById('profile-firstname').value = user.firstName || '';
+            document.getElementById('profile-lastname').value = user.lastName || '';
+            document.getElementById('profile-email').value = user.email || '';
+            document.getElementById('profile-phone').value = user.phone || '';
+            document.getElementById('profile-full-name').textContent = fullName;
+            document.getElementById('profile-email-display').textContent = user.email;
+            document.getElementById('profile-avatar').src = getAvatarSrc(user);
+        }
+
+        function saveProfile() {
+            const user = JSON.parse(sessionStorage.getItem('qogozAdminUser'));
+            user.firstName = document.getElementById('profile-firstname').value.trim();
+            user.lastName = document.getElementById('profile-lastname').value.trim();
+            user.email = document.getElementById('profile-email').value.trim();
+            user.phone = document.getElementById('profile-phone').value.trim();
+
+            // Update in users list too
+            let users = JSON.parse(localStorage.getItem('qogozAdmins') || '[]');
+            const idx = users.findIndex(u => u.email === user.email || (u.firstName === user.firstName && u.lastName === user.lastName));
+            if (idx !== -1) users[idx] = user;
+            localStorage.setItem('qogozAdmins', JSON.stringify(users));
+            sessionStorage.setItem('qogozAdminUser', JSON.stringify(user));
+
+            loadProfile();
+            checkAuth();
+            showToast('Profil muvaffaqiyatli saqlandi!');
+        }
+
+        // ——— Avatar Upload ———
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Fayl hajmini tekshirish (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Rasm hajmi 5MB dan oshmasligi kerak!', true);
+                return;
+            }
+
+            // Fayl turini tekshirish
+            if (!file.type.startsWith('image/')) {
+                showToast('Faqat rasm fayllari yuklanadi!', true);
+                return;
+            }
+
+            const hint = document.getElementById('avatar-upload-hint');
+            hint.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yuklanmoqda...';
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64 = e.target.result;
+
+                // Rasmni LocalStorage'ga saqlash
+                try {
+                    localStorage.setItem('qogozAdminAvatar', base64);
+                } catch (err) {
+                    showToast('Rasm hajmi juda katta, siqilgan formatda yuklang!', true);
+                    hint.innerHTML = 'JPG, PNG yoki GIF • Maks 5MB';
+                    return;
+                }
+
+                // Profile avatarini yangilash
+                const profileAvatar = document.getElementById('profile-avatar');
+                profileAvatar.style.opacity = '0';
+                profileAvatar.style.transition = 'opacity 0.3s';
+                setTimeout(() => {
+                    profileAvatar.src = base64;
+                    profileAvatar.style.opacity = '1';
+                }, 150);
+
+                // Header avatarini ham yangilash
+                const headerAvatar = document.getElementById('header-avatar');
+                if (headerAvatar) headerAvatar.src = base64;
+
+                hint.innerHTML = '<i class="fas fa-check-circle" style="color:var(--success)"></i> Rasm muvaffaqiyatli yuklandi!';
+                setTimeout(() => {
+                    hint.innerHTML = 'JPG, PNG yoki GIF • Maks 5MB';
+                }, 3000);
+
+                showToast('Profil rasmi yangilandi! ✓');
+            };
+            reader.readAsDataURL(file);
+
+            // Input ni reset qilish (bir xil rasmni qayta yuklash uchun)
+            event.target.value = '';
+        }
+
+        // ——— Password ———
+        function changePassword() {
+            const user = JSON.parse(sessionStorage.getItem('qogozAdminUser'));
+            const oldPass = document.getElementById('old-password').value;
+            const newPass = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+            const errorEl = document.getElementById('password-error');
+
+            if (oldPass !== user.password) {
+                errorEl.textContent = "Joriy parol noto'g'ri!";
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (newPass.length < 6) {
+                errorEl.textContent = "Yangi parol kamida 6 ta belgi bo'lishi kerak!";
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (newPass !== confirmPass) {
+                errorEl.textContent = "Parollar mos kelmadi!";
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            user.password = newPass;
+
+            let users = JSON.parse(localStorage.getItem('qogozAdmins') || '[]');
+            const idx = users.findIndex(u => u.email === user.email);
+            if (idx !== -1) users[idx] = user;
+            localStorage.setItem('qogozAdmins', JSON.stringify(users));
+            sessionStorage.setItem('qogozAdminUser', JSON.stringify(user));
+
+            document.getElementById('old-password').value = '';
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            showToast('Parol muvaffaqiyatli yangilandi!');
+        }
+
+        // ——— Notifications Settings ———
+        function loadNotificationSettings() {
+            const settings = JSON.parse(localStorage.getItem('qogozNotifSettings') || '{"orders":true,"customers":true,"stock":true,"system":false}');
+            document.getElementById('notif-orders').checked = settings.orders;
+            document.getElementById('notif-customers').checked = settings.customers;
+            document.getElementById('notif-stock').checked = settings.stock;
+            document.getElementById('notif-system').checked = settings.system;
+        }
+
+        function saveNotifications() {
+            const settings = {
+                orders: document.getElementById('notif-orders').checked,
+                customers: document.getElementById('notif-customers').checked,
+                stock: document.getElementById('notif-stock').checked,
+                system: document.getElementById('notif-system').checked,
+            };
+            localStorage.setItem('qogozNotifSettings', JSON.stringify(settings));
+            showToast('Sozlamalar saqlandi!');
+        }
+
+        // ——— Appearance ———
+        function setColor(color, el) {
+            document.querySelectorAll('.color-option').forEach(c => {
+                c.style.border = '3px solid transparent';
+            });
+            el.style.border = `3px solid ${color}`;
+            el.style.boxShadow = '0 0 0 3px white inset';
+            document.documentElement.style.setProperty('--primary', color);
+            localStorage.setItem('qogozAccentColor', color);
+            showToast('Rang o\'zgartirildi!');
+        }
+
+        function toggleDarkMode(el) {
+            if (el.checked) {
+                document.body.style.background = '#1a1a2e';
+                document.body.style.color = '#e2e8f0';
+                localStorage.setItem('qogozDarkMode', '1');
+                showToast('Qorang\'i rejim yoqildi');
+            } else {
+                document.body.style.background = '';
+                document.body.style.color = '';
+                localStorage.removeItem('qogozDarkMode');
+                showToast('Yorug\' rejim yoqildi');
+            }
+        }
+
+        function applyStoredColor() {
+            const color = localStorage.getItem('qogozAccentColor');
+            if (color) {
+                document.documentElement.style.setProperty('--primary', color);
+                document.querySelectorAll('.color-option').forEach(el => {
+                    if (el.dataset.color === color) {
+                        el.style.border = `3px solid ${color}`;
+                        el.style.boxShadow = '0 0 0 3px white inset';
+                    }
+                });
+            }
+            const dark = localStorage.getItem('qogozDarkMode');
+            if (dark) {
+                document.getElementById('dark-mode').checked = true;
+                document.body.style.background = '#1a1a2e';
+            }
+        }
+
+        // ——— Danger Zone ———
+        function clearOrders() {
+            if (confirm("Haqiqatan ham barcha buyurtmalarni o'chirmoqchimisiz?")) {
+                localStorage.removeItem('qogozOrders');
+                localStorage.removeItem('qogozNotifications');
+                showToast("Barcha buyurtmalar o'chirildi!", true);
+            }
+        }
+
+        function clearNotifications() {
+            if (confirm("Barcha bildirishnomalarni o'chirmoqchimisiz?")) {
+                localStorage.removeItem('qogozNotifications');
+                showToast("Bildirishnomalar tozalandi!");
+            }
+        }
+
+        // ——— Notification Modal ———
+        function loadNotifModal() {
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            const body = document.querySelector('.modal-body');
+            const badge = document.querySelector('.notif-badge');
+            const unread = notifs.filter(n => n.unread).length;
+            badge.textContent = unread;
+            badge.style.display = unread > 0 ? 'flex' : 'none';
+
+            if (notifs.length === 0) {
+                body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">Bildirishnomalar yo\'q</div>';
+                return;
+            }
+            body.innerHTML = '';
+            notifs.forEach(n => {
+                const div = document.createElement('div');
+                div.className = `notification-item ${n.unread ? 'unread' : ''}`;
+                div.innerHTML = `
+                    <div class="notif-icon order"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="notif-details">
+                        <p><strong>${n.title}</strong> ${n.body}</p>
+                        <span class="notif-time">${n.time}</span>
+                    </div>`;
+                body.appendChild(div);
+            });
+        }
+
+        // ——— Toast ———
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerHTML = `<i class="fas fa-${isError ? 'exclamation-circle' : 'check-circle'}" style="color:var(--${isError ? 'danger' : 'success'});font-size:1.1rem;"></i><span>${msg}</span>`;
+            toast.className = 'toast show' + (isError ? ' error' : '');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // ——— Modal Listeners ———
+        document.querySelector('.notif-btn').addEventListener('click', () => {
+            document.getElementById('notifModal').classList.add('show');
+        });
+        document.getElementById('closeNotif').addEventListener('click', () => {
+            document.getElementById('notifModal').classList.remove('show');
+        });
+        window.addEventListener('click', e => {
+            if (e.target === document.getElementById('notifModal'))
+                document.getElementById('notifModal').classList.remove('show');
+        });
+
+        // ——— Update orders badge in sidebar ———
+        function updateOrdersBadge() {
+            const orders = JSON.parse(localStorage.getItem('qogozOrders') || '[]');
+            const badge = document.getElementById('orders-badge');
+            if (badge) badge.textContent = orders.length;
+        }
+
+        // ——— Init ———
+        checkAuth();
+        loadProfile();
+        loadNotifModal();
+        loadNotificationSettings();
+        applyStoredColor();
+        updateOrdersBadge();
+    </script>
+
+</body>
+
+</html>
