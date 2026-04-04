@@ -446,8 +446,8 @@
                         <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 15px;">
                             <span style="color: var(--text-light); font-size: 0.9rem;"><i class="fas fa-cubes"></i> ${product.stock} ta</span>
                             <div style="display: flex; gap: 10px;">
-                                <button onclick="editProduct('${product._id}')" style="background: none; border: none; color: var(--info); cursor: pointer;"><i class="fas fa-pen"></i></button>
-                                <button onclick="deleteProduct('${product._id}')" style="background: none; border: none; color: var(--danger); cursor: pointer;"><i class="fas fa-trash"></i></button>
+                                <button onclick="editProduct('${product.id}')" style="background: none; border: none; color: var(--info); cursor: pointer;"><i class="fas fa-pen"></i></button>
+                                <button onclick="deleteProduct('${product.id}')" style="background: none; border: none; color: var(--danger); cursor: pointer;"><i class="fas fa-trash"></i></button>
                             </div>
                         </div>
                     </div>
@@ -511,10 +511,10 @@
             try {
                 const res = await fetch('/api/products');
                 const products = await res.json();
-                const product = products.find(p => p._id === id);
+                const product = products.find(p => p.id === id);
                 if (product) {
-                    document.getElementById('modal-title').innerHTML = '<i class="fas fa-pen text-primary"></i> Tahrirlash';
-                    document.getElementById('product-id').value = product._id;
+                    document.getElementById('modal-title').innerHTML = '<i class="fas fa-pen text-primary"></i> Mahsulotni Tahrirlash';
+                    document.getElementById('product-id').value = product.id;
                     document.getElementById('p-name').value = product.name;
                     document.getElementById('p-category').value = product.category;
                     document.getElementById('p-price').value = product.price;
