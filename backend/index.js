@@ -13,16 +13,22 @@ const app = express();
 const PORT = process.env.PORT || 5001;
 
 // --- PostgreSQL Connection (Sequelize) ---
-const DATABASE_URL = process.env.DATABASE_URL || "postgresql://postgres:qVQhwvwYuUQPDGhfPMhSLrYuCeoCTeab@postgres.railway.internal:5432/railway";
+const DATABASE_URL = process.env.DATABASE_URL;
+
+if (!DATABASE_URL) {
+    console.error('❌ XATO: DATABASE_URL o\'rnatilmagan!');
+}
 
 const sequelize = new Sequelize(DATABASE_URL, {
     dialect: 'postgres',
-    logging: false,
+    logging: (msg) => console.log(`[DB]: ${msg}`), // SQL loglarni ko'rish uchun
     dialectOptions: {
-        ssl: DATABASE_URL.includes('railway.internal') ? false : {
-            require: true,
-            rejectUnauthorized: false
-        }
+        ssl: (DATABASE_URL && (DATABASE_URL.includes('railway.internal') || DATABASE_URL.includes('localhost') || DATABASE_URL.includes('127.0.0.1'))) 
+            ? false 
+            : {
+                require: true,
+                rejectUnauthorized: false
+            }
     }
 });
 
@@ -61,10 +67,23 @@ const Reply = sequelize.define('Reply', {
 Order.hasMany(Reply, { as: 'replies', onDelete: 'CASCADE' });
 Reply.belongsTo(Order);
 
-// Sync Database
-sequelize.sync()
-    .then(() => console.log('✅ PostgreSQL (Sequelize) ulandi!'))
-    .catch(err => console.error('❌ PostgreSQL ulanishda xato:', err));
+// DB State
+let isDbConnected = false;
+
+// Authenticate & Sync
+async function initDb() {
+    try {
+        await sequelize.authenticate();
+        console.log('✅ PostgreSQL ulanishi muvaffaqiyatli!');
+        await sequelize.sync();
+        console.log('✅ Ma\'lumotlar bazasi jadvallari tayyor!');
+        isDbConnected = true;
+    } catch (err) {
+        console.error('❌ PostgreSQL xatoligi:', err.message);
+        console.error('Full Error:', err);
+    }
+}
+initDb();
 
 // --- Middleware ---
 app.use(cors());
@@ -90,7 +109,6 @@ const upload = multer({
     })
 });
 
-// Helper for R2 Public URL
 function getR2PublicUrl(key) {
     if (!key) return null;
     if (process.env.R2_PUBLIC_URL) {
@@ -99,11 +117,22 @@ function getR2PublicUrl(key) {
     return `https://${process.env.R2_BUCKET_NAME}.r2.cloudflarestorage.com/${key}`;
 }
 
+// --- Debug Routes ---
+
+app.get('/api/db-check', async (req, res) => {
+    try {
+        await sequelize.authenticate();
+        res.json({ status: 'OK', message: 'Database is connected!', internalStatus: isDbConnected });
+    } catch (err) {
+        res.status(500).json({ status: 'ERROR', message: err.message });
+    }
+});
+
 // --- Routes ---
 
-// Orders API
 app.get('/api/orders', async (req, res) => {
     try {
+        if (!isDbConnected) throw new Error("Baza hali tayyor emas");
         const orders = await Order.findAll({
             include: [{ model: Reply, as: 'replies' }],
             order: [['id', 'DESC']]
@@ -116,22 +145,28 @@ app.get('/api/orders', async (req, res) => {
 
 app.post('/api/orders', async (req, res) => {
     try {
+        if (!isDbConnected) throw new Error("Baza hali tayyor emas");
         const newOrder = await Order.create(req.body);
         
         // Telegram Notification
         const botToken = process.env.TELEGRAM_BOT_TOKEN;
         const chatId = process.env.TELEGRAM_CHAT_ID;
         if (botToken && chatId) {
-            const msg = `🚀 <b>Yangi buyurtma!</b>\n\n👤 <b>Ism:</b> ${req.body.name}\n📞 <b>Tel:</b> ${req.body.phone}\n📝 <b>Xabar:</b> ${req.body.message}`;
-            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'HTML' })
-            }).catch(e => console.error('Telegram error:', e));
+            try {
+                const msg = `🚀 <b>Yangi buyurtma!</b>\n\n👤 <b>Ism:</b> ${req.body.name}\n📞 <b>Tel:</b> ${req.body.phone}\n📝 <b>Xabar:</b> ${req.body.message}`;
+                fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'HTML' })
+                }).catch(e => console.error('Telegram notification error:', e));
+            } catch (tgErr) {
+                console.error('Telegram fetch init error:', tgErr);
+            }
         }
 
         res.status(201).json(newOrder);
     } catch (err) {
+        console.error('Order creation error:', err);
         res.status(400).json({ error: err.message });
     }
 });
@@ -158,6 +193,7 @@ app.delete('/api/orders/:id', async (req, res) => {
 // Products API
 app.get('/api/products', async (req, res) => {
     try {
+        if (!isDbConnected) return res.json([]);
         const products = await Product.findAll({ order: [['id', 'DESC']] });
         res.json(products);
     } catch (err) {
@@ -204,6 +240,7 @@ app.delete('/api/products/:id', async (req, res) => {
 // Notifications API
 app.get('/api/notifications', async (req, res) => {
     try {
+        if (!isDbConnected) return res.json([]);
         const notifs = await Notification.findAll({ order: [['id', 'DESC']] });
         res.json(notifs);
     } catch (err) {
