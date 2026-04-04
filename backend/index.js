@@ -3,6 +3,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
+const { S3Client } = require('@aws-sdk/client-s3');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
@@ -238,13 +241,107 @@ app.get('/api/notifications', async (req, res) => {
     }
 });
 
-app.post('/api/notifications', async (req, res) => {
+// --- Cloudflare R2 / S3 Configuration ---
+const s3 = new S3Client({
+    region: 'auto',
+    endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+    credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID,
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY,
+    }
+});
+
+const upload = multer({
+    storage: multerS3({
+        s3: s3,
+        bucket: process.env.R2_BUCKET_NAME || 'my-bucket',
+        metadata: function (req, file, cb) {
+            cb(null, { fieldName: file.fieldname });
+        },
+        key: function (req, file, cb) {
+            const fileName = Date.now().toString() + '-' + file.originalname;
+            cb(null, fileName);
+        }
+    })
+});
+
+// --- Routes ---
+
+// Image Upload API
+app.post('/api/upload', upload.single('image'), (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: 'Fayl yuklanmadi' });
+    }
+    
+    // Cloudflare R2 Public URL ni qaytarish
+    const publicUrl = process.env.R2_PUBLIC_URL 
+        ? `${process.env.R2_PUBLIC_URL}/${req.file.key}` 
+        : `https://${process.env.R2_BUCKET_NAME}.r2.cloudflarestorage.com/${req.file.key}`;
+        
+    res.json({ 
+        url: publicUrl,
+        key: req.file.key
+    });
+});
+
+// Products API
+app.get('/api/products', async (req, res) => {
     try {
-        const newNotif = new Notification(req.body);
-        const savedNotif = await newNotif.save();
-        res.status(201).json(savedNotif);
+        const products = await Product.find().sort({ _id: -1 });
+        res.json(products);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post('/api/products', upload.single('image'), async (req, res) => {
+    try {
+        let imageUrl = req.body.image; // Agar link sifatida berilgan bo'lsa
+        
+        if (req.file) {
+            imageUrl = process.env.R2_PUBLIC_URL 
+                ? `${process.env.R2_PUBLIC_URL}/${req.file.key}` 
+                : `https://${process.env.R2_BUCKET_NAME}.r2.cloudflarestorage.com/${req.file.key}`;
+        }
+
+        const newProduct = new Product({
+            name: req.body.name,
+            price: req.body.price,
+            category: req.body.category,
+            stock: req.body.stock,
+            image: imageUrl
+        });
+
+        const savedProduct = await newProduct.save();
+        res.status(201).json(savedProduct);
     } catch (err) {
         res.status(400).json({ error: err.message });
+    }
+});
+
+app.put('/api/products/:id', upload.single('image'), async (req, res) => {
+    try {
+        let updateData = { ...req.body };
+        
+        if (req.file) {
+            updateData.image = process.env.R2_PUBLIC_URL 
+                ? `${process.env.R2_PUBLIC_URL}/${req.file.key}` 
+                : `https://${process.env.R2_BUCKET_NAME}.r2.cloudflarestorage.com/${req.file.key}`;
+        }
+
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, updateData, { new: true });
+        res.json(updatedProduct);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
+app.delete('/api/products/:id', async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.id);
+        res.json({ message: 'Mahsulot o\'chirildi' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
