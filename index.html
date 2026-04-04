@@ -537,45 +537,20 @@
                             Maqsadimiz</span></h2>
                 </div>
 
-                <div class="services-grid">
+                <div class="services-grid" id="main-products-grid">
+                    <!-- Mahsulotlar API orqali yuklanadi -->
                     <div class="service-card animate-up">
                         <div class="service-number">01</div>
                         <div class="service-icon"><i class="fas fa-file-alt"></i></div>
                         <h3>Premium Ofis Qog'ozi</h3>
-                        <p>Eng yuqori oqlik darajasiga ega, har qanday printerda muammosiz ishlaydi.
-                            .</p>
+                        <p>Eng yuqori oqlik darajasiga ega, har qanday printerda muammosiz ishlaydi.</p>
                         <ul class="service-list">
                             <li><i class="fas fa-check"></i> 100% oqlik</li>
                             <li><i class="fas fa-check"></i> Changsiz texnologiya</li>
                         </ul>
                         <a href="#contact" class="btn-text">Buyurtma berish <i class="fas fa-arrow-right"></i></a>
                     </div>
-
-                    <div class="service-card animate-up delay-1">
-                        <div class="service-number">02</div>
-                        <div class="service-icon"><i class="fas fa-shipping-fast"></i></div>
-                        <h3>Sanoat Kartonlari</h3>
-                        <p>Og'ir xalqaro eksport yuklari uchun mo'ljallangan, ko'p qatlamli yuqori chidamlilikdagi
-                            kartonlar.</p>
-                        <ul class="service-list">
-                            <li><i class="fas fa-check"></i> 3 va 5 qatlamli</li>
-                            <li><i class="fas fa-check"></i> Namlikka chidamli</li>
-                        </ul>
-                        <a href="#contact" class="btn-text">Batafsil <i class="fas fa-arrow-right"></i></a>
-                    </div>
-
-                    <div class="service-card animate-up delay-2">
-                        <div class="service-number">03</div>
-                        <div class="service-icon"><i class="fas fa-scroll"></i></div>
-                        <h3>Rulonli Qog'ozlar</h3>
-                        <p>Bosmaxonalar va katta hajmdagi ishlab chiqarishlar uchun maxsus rulonli qog'oz mahsulotlari.
-                        </p>
-                        <ul class="service-list">
-                            <li><i class="fas fa-check"></i> Istalgan kenglikda</li>
-                            <li><i class="fas fa-check"></i> Yuqori zichlik</li>
-                        </ul>
-                        <a href="#contact" class="btn-text">Bog'lanish <i class="fas fa-arrow-right"></i></a>
-                    </div>
+                    <!-- Qo'shimcha static kartalar fallback sifatida qoladi -->
                 </div>
             </div>
         </section>
@@ -732,11 +707,22 @@
                                         headers: { 'Content-Type': 'application/json' },
                                         body: JSON.stringify(newOrder)
                                     }).then(async res => {
-                                        if (!res.ok) {
-                                            const errorData = await res.json();
-                                            throw new Error(errorData.error || "Server xatosi");
+                                        const contentType = res.headers.get("content-type");
+                                        if (res.ok) {
+                                            if (contentType && contentType.includes("application/json")) {
+                                                return res.json();
+                                            }
+                                            return { success: true };
+                                        } else {
+                                            let errorMsg = "Server xatosi";
+                                            if (contentType && contentType.includes("application/json")) {
+                                                const errorData = await res.json();
+                                                errorMsg = errorData.error || errorMsg;
+                                            } else {
+                                                errorMsg = `Server xatosi: ${res.status}`;
+                                            }
+                                            throw new Error(errorMsg);
                                         }
-                                        return res.json();
                                     }).then(data => {
                                         console.log("Buyurtma yuborildi:", data);
                                         
@@ -1202,6 +1188,54 @@
             }
         }, 5000);
 
+        // --- Dynamic Products Fetching ---
+        async function fetchMainProducts() {
+            try {
+                if (window.location.protocol === 'file:') return;
+                const res = await fetch('/api/products');
+                const contentType = res.headers.get("content-type");
+                
+                if (!res.ok) {
+                    console.error('Mahsulotlar API xatosi:', res.status);
+                    return;
+                }
+
+                if (contentType && contentType.includes("application/json")) {
+                    const products = await res.json();
+                    if (products && products.length > 0) {
+                        renderMainProducts(products);
+                    }
+                }
+            } catch (err) {
+                console.error('Mahsulotlarni yuklashda xatolik:', err);
+            }
+        }
+
+        function renderMainProducts(products) {
+            const grid = document.getElementById('main-products-grid');
+            grid.innerHTML = products.map((p, i) => `
+                <div class="service-card animate-up" style="animation-delay: ${i * 0.1}s">
+                    <div class="service-number">${(i + 1).toString().padStart(2, '0')}</div>
+                    <div class="service-icon">
+                        ${p.image ? `<img src="${p.image}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` : '<i class="fas fa-box"></i>'}
+                    </div>
+                    <h3>${p.name}</h3>
+                    <p>${p.category} - Yuqori sifatli mahsulot.</p>
+                    <ul class="service-list">
+                        <li><i class="fas fa-check"></i> Narxi: ${Number(p.price).toLocaleString()} so'm</li>
+                        <li><i class="fas fa-check"></i> Ombor: ${p.stock > 0 ? p.stock + ' ta' : 'Tugagan'}</li>
+                    </ul>
+                    <a href="#contact-form" onclick="selectProduct('${p.name}')" class="btn-text">Buyurtma berish <i class="fas fa-arrow-right"></i></a>
+                </div>
+            `).join('');
+        }
+
+        function selectProduct(name) {
+            document.getElementById('orderMessage').value = `${name} haqida ma'lumot olmoqchiman.`;
+            document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        fetchMainProducts();
         updateCustomerChat();
     </script>
 

@@ -74,50 +74,14 @@
                     <h1>Mahsulotlar Ro'yxati</h1>
                     <p>Ombordagi va saytdagi barcha mahsulotlar</p>
                 </div>
-                <button class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+                <button class="btn btn-primary" id="add-product-btn" style="padding: 10px 20px; font-size: 0.9rem;">
                     <i class="fas fa-plus"></i> Yangi Mahsulot Qo'shish
                 </button>
             </div>
 
             <!-- Products Grid -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-                <!-- Product Card 1 -->
-                <div
-                    style="background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition);">
-                    <div
-                        style="height: 180px; background-image: url('QOG\'OZ.jpg'); background-size: cover; background-position: center; position: relative;">
-                        <span
-                            style="position: absolute; top: 15px; right: 15px; background: var(--success); color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">Omborda
-                            mavjud</span>
-                    </div>
-                    <div style="padding: 20px;">
-                        <span style="color: var(--text-light); font-size: 0.8rem; text-transform: uppercase;">A4
-                            Format</span>
-                        <h3 style="margin: 5px 0 10px; font-size: 1.1rem; color: var(--secondary);">Premium Ofis Qog'ozi
-                            (80g/m2)</h3>
-                        <p style="color: var(--primary); font-size: 1.2rem; font-weight: bold; margin-bottom: 20px;">
-                            28,500 so'm <span
-                                style="font-size: 0.8rem; color: var(--text-light); font-weight: normal;">/
-                                pachka</span></p>
-
-                        <div
-                            style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 15px;">
-                            <span style="color: var(--text-light); font-size: 0.9rem;"><i class="fas fa-cubes"></i>
-                                4,500 ta</span>
-                            <div style="display: flex; gap: 10px;">
-                                <button style="background: none; border: none; color: var(--info); cursor: pointer;"><i
-                                        class="fas fa-pen"></i></button>
-                                <button
-                                    style="background: none; border: none; color: var(--danger); cursor: pointer;"><i
-                                        class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-
+            <div id="products-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <!-- Mahsulotlar bu yerga yuklanadi -->
             </div>
 
         </div>
@@ -277,53 +241,49 @@
         }
     </style>
 
-    <!-- Notification Modal -->
-    <div id="notifModal" class="modal">
-        <div class="modal-content">
+    <!-- Product Modal -->
+    <div id="productModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
             <div class="modal-header">
-                <h3><i class="fas fa-bell text-primary"></i> Bildirishnomalar</h3>
-                <button class="close-modal" id="closeNotif">&times;</button>
+                <h3 id="modal-title"><i class="fas fa-box text-primary"></i> Yangi Mahsulot</h3>
+                <button class="close-modal" id="closeProductModal">&times;</button>
             </div>
-            <div class="modal-body">
-                <div class="notification-item unread">
-                    <div class="notif-icon order">
-                        <i class="fas fa-shopping-cart"></i>
+            <div class="modal-body" style="padding: 20px; max-height: 80vh;">
+                <form id="product-form">
+                    <input type="hidden" id="product-id">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Mahsulot nomi</label>
+                        <input type="text" id="p-name" placeholder="Masalan: Premium A4 qog'oz" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;" required>
                     </div>
-                    <div class="notif-details">
-                        <p><strong>Yangi buyurtma!</strong> Alisher Rustamovdan 1,250,000 so'mlik xarid.</p>
-                        <span class="notif-time">10 daqiqa oldin</span>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Kategoriya</label>
+                        <select id="p-category" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                            <option value="A4 Format">A4 Format</option>
+                            <option value="Karton">Karton</option>
+                            <option value="Rulon">Rulon</option>
+                            <option value="Boshqa">Boshqa</option>
+                        </select>
                     </div>
-                </div>
-                <div class="notification-item unread">
-                    <div class="notif-icon alert">
-                        <i class="fas fa-exclamation-triangle"></i>
+                    <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Narxi (so'm)</label>
+                            <input type="number" id="p-price" placeholder="28500" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;" required>
+                        </div>
+                        <div style="flex: 1;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: 600;">Soni (stock)</label>
+                            <input type="number" id="p-stock" placeholder="100" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;" required>
+                        </div>
                     </div>
-                    <div class="notif-details">
-                        <p><strong>Diqqat!</strong> Omborda "Bosmaxona Rulon Qog'ozi" kam qoldi (8 ta).</p>
-                        <span class="notif-time">2 soat oldin</span>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 600;">Rasm yuklash (R2 uchun)</label>
+                        <input type="file" id="p-image" accept="image/*" style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                        <p style="font-size: 0.75rem; color: var(--text-light); margin-top: 5px;">Rasm tanlasangiz, u Cloudflare R2-ga yuklanadi.</p>
                     </div>
-                </div>
-                <div class="notification-item unread">
-                    <div class="notif-icon message">
-                        <i class="fas fa-comment-dots"></i>
+                    <div id="image-preview" style="margin-bottom: 15px; display: none; text-align: center;">
+                        <img src="" style="max-width: 100%; max-height: 150px; border-radius: 8px; border: 1px solid var(--border);">
                     </div>
-                    <div class="notif-details">
-                        <p><strong>Yangi xabar:</strong> "Ideal Print" MCHJ sizga xabar qoldirdi.</p>
-                        <span class="notif-time">Kecha, 14:30</span>
-                    </div>
-                </div>
-                <div class="notification-item">
-                    <div class="notif-icon order">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="notif-details">
-                        <p>Buyurtma #ORD-002 muvaffaqiyatli yetkazib berildi.</p>
-                        <span class="notif-time">05 Mart, 2026</span>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <a href="#">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">Saqlash</button>
+                </form>
             </div>
         </div>
     </div>
@@ -440,10 +400,158 @@
             if (badge) badge.textContent = orders.length;
         }
 
+        // --- Product Management Logic ---
+        const productsGrid = document.getElementById('products-grid');
+        const productModal = document.getElementById('productModal');
+        const addProductBtn = document.getElementById('add-product-btn');
+        const closeProductModal = document.getElementById('closeProductModal');
+        const productForm = document.getElementById('product-form');
+
+        async function fetchProducts() {
+            try {
+                if (window.location.protocol === 'file:') return;
+                const res = await fetch('/api/products');
+                const contentType = res.headers.get("content-type");
+
+                if (!res.ok) {
+                    console.error('Mahsulotlar API xatosi:', res.status);
+                    return;
+                }
+
+                if (contentType && contentType.includes("application/json")) {
+                    const products = await res.json();
+                    renderProducts(products);
+                }
+            } catch (err) {
+                console.error('Mahsulotlarni yuklashda xato:', err);
+            }
+        }
+
+        function renderProducts(products) {
+            productsGrid.innerHTML = products.map(product => `
+                <div style="background: white; border-radius: 12px; border: 1px solid var(--border); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition);">
+                    <div style="height: 180px; background-image: url('${product.image || 'QOG\'OZ.jpg'}'); background-size: cover; background-position: center; position: relative;">
+                        <span style="position: absolute; top: 15px; right: 15px; background: ${product.stock > 0 ? 'var(--success)' : 'var(--danger)'}; color: white; padding: 5px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: bold;">
+                            ${product.stock > 0 ? 'Omborda mavjud' : 'Tugagan'}
+                        </span>
+                    </div>
+                    <div style="padding: 20px;">
+                        <span style="color: var(--text-light); font-size: 0.8rem; text-transform: uppercase;">${product.category}</span>
+                        <h3 style="margin: 5px 0 10px; font-size: 1.1rem; color: var(--secondary);">${product.name}</h3>
+                        <p style="color: var(--primary); font-size: 1.2rem; font-weight: bold; margin-bottom: 20px;">
+                            ${Number(product.price).toLocaleString()} so'm 
+                            <span style="font-size: 0.8rem; color: var(--text-light); font-weight: normal;">/ dona</span>
+                        </p>
+
+                        <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 15px;">
+                            <span style="color: var(--text-light); font-size: 0.9rem;"><i class="fas fa-cubes"></i> ${product.stock} ta</span>
+                            <div style="display: flex; gap: 10px;">
+                                <button onclick="editProduct('${product._id}')" style="background: none; border: none; color: var(--info); cursor: pointer;"><i class="fas fa-pen"></i></button>
+                                <button onclick="deleteProduct('${product._id}')" style="background: none; border: none; color: var(--danger); cursor: pointer;"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        addProductBtn.addEventListener('click', () => {
+            document.getElementById('modal-title').innerHTML = '<i class="fas fa-plus text-primary"></i> Yangi Mahsulot';
+            productForm.reset();
+            document.getElementById('product-id').value = '';
+            document.getElementById('image-preview').style.display = 'none';
+            productModal.classList.add('show');
+        });
+
+        closeProductModal.addEventListener('click', () => productModal.classList.remove('show'));
+
+        productForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('product-id').value;
+            const formData = new FormData();
+            formData.append('name', document.getElementById('p-name').value);
+            formData.append('category', document.getElementById('p-category').value);
+            formData.append('price', document.getElementById('p-price').value);
+            formData.append('stock', document.getElementById('p-stock').value);
+            
+            const imageFile = document.getElementById('p-image').files[0];
+            if (imageFile) {
+                formData.append('image', imageFile);
+            }
+
+            const url = id ? `/api/products/${id}` : '/api/products';
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, { method, body: formData });
+                if (res.ok) {
+                    productModal.classList.remove('show');
+                    fetchProducts();
+                    alert('Muvaffaqiyatli saqlandi!');
+                } else {
+                    const err = await res.json();
+                    alert('Xato: ' + err.error);
+                }
+            } catch (err) {
+                alert('Server bilan bog\'lanishda xato!');
+            }
+        });
+
+        async function deleteProduct(id) {
+            if (!confirm('Haqiqatdan ham o\'chirmoqchimisiz?')) return;
+            try {
+                const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                if (res.ok) fetchProducts();
+            } catch (err) {
+                alert('O\'chirishda xato yuz berdi');
+            }
+        }
+
+        async function editProduct(id) {
+            try {
+                const res = await fetch('/api/products');
+                const products = await res.json();
+                const product = products.find(p => p._id === id);
+                if (product) {
+                    document.getElementById('modal-title').innerHTML = '<i class="fas fa-pen text-primary"></i> Tahrirlash';
+                    document.getElementById('product-id').value = product._id;
+                    document.getElementById('p-name').value = product.name;
+                    document.getElementById('p-category').value = product.category;
+                    document.getElementById('p-price').value = product.price;
+                    document.getElementById('p-stock').value = product.stock;
+                    
+                    if (product.image) {
+                        const preview = document.getElementById('image-preview');
+                        preview.querySelector('img').src = product.image;
+                        preview.style.display = 'block';
+                    }
+                    
+                    productModal.classList.add('show');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Image preview
+        document.getElementById('p-image').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('image-preview');
+                    preview.querySelector('img').src = event.target.result;
+                    preview.style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
         checkAuth();
         updateSidebarBadge();
         loadNotifications();
         updateNotificationBadge();
+        fetchProducts();
     </script>
 </body>
 
