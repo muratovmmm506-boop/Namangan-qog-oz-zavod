@@ -66,6 +66,12 @@ body {
     font-size: 1.2rem;
 }
 
+.logo img {
+    height: 35px;
+    width: auto;
+    object-fit: contain;
+}
+
 .text-primary {
     color: var(--primary);
 }

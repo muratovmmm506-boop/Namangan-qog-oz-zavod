@@ -21,7 +21,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
-                <i class="fas fa-industry text-primary"></i> <span>QOG'OZ ZAVOD</span>
+                <img src="Icon Image/orange-q.svg" alt="Logo"> <span>QOG'OZ</span>
             </a>
             <p class="admin-badge">Admin Panel</p>
         </div>
@@ -33,7 +33,7 @@
                 <li><a href="admin-orders.html"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span class="badge"
                             id="orders-badge">0</span></a></li>
                 <li><a href="admin-customers.html" class="active"><i class="fas fa-users"></i> Mijozlar</a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-reports.html"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
                 <li><a href="admin-settings.html"><i class="fas fa-cog"></i> Sozlamalar</a></li>
             </ul>
         </nav>
@@ -74,7 +74,7 @@
                     <h1>Mijozlar Bazasi</h1>
                     <p>Barcha ro'yxatdan o'tgan va xarid qilgan mijozlar</p>
                 </div>
-                <button class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+                <button class="btn btn-primary" id="add-customer-btn" style="padding: 10px 20px; font-size: 0.9rem;">
                     <i class="fas fa-user-plus"></i> Yangi Mijoz
                 </button>
             </div>
@@ -103,6 +103,34 @@
 
         </div>
     </main>
+
+    <!-- New Customer Modal -->
+    <div id="newCustomerModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-user-plus text-primary"></i> Yangi Mijoz Qo'shish</h3>
+                <button class="close-modal" id="closeNewCustomer">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <form id="new-customer-form">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Mijoz ismi / Kompaniya</label>
+                        <input type="text" id="cust-name" class="form-control" placeholder="Ismni kiriting" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Telefon raqam</label>
+                        <input type="tel" id="cust-phone" class="form-control" placeholder="+998" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Manzil</label>
+                        <input type="text" id="cust-address" class="form-control" placeholder="Manzilni kiriting">
+                    </div>
+                    <p style="font-size: 0.8rem; color: var(--text-light); margin-bottom: 15px;">Eslatma: Mijoz qo'shish uning birinchi buyurtmasi bilan birga ro'yxatga olinadi.</p>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px;">Mijozni saqlash</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <style>
         /* Modal Styles */
@@ -304,7 +332,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+                <a href="#" onclick="markAllRead(event)">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
             </div>
         </div>
     </div>
@@ -377,6 +405,15 @@
             if (!user) {
                 window.location.href = 'admin-login.html';
                 return;
+            }
+
+            // Apply global theme settings
+            const settings = JSON.parse(localStorage.getItem('qogozAdminSettings') || '{}');
+            if (settings.primaryColor) {
+                document.documentElement.style.setProperty('--primary', settings.primaryColor);
+            }
+            if (settings.darkMode) {
+                document.body.classList.add('dark-mode');
             }
 
             // Update UI with admin name
@@ -720,7 +757,7 @@
                         <td style="font-weight: bold; color: var(--secondary);">-</td>
                         <td>
                             <button class="action-btn" title="Xabar yuborish" style="color: var(--primary);" onclick="viewCustomerChat('${customer.phone}')"><i class="fas fa-comment-dots"></i></button>
-                            <button class="action-btn" title="O'chirish" style="color: var(--danger);" onclick="this.closest('tr').remove()"><i class="fas fa-trash"></i></button>
+                            <button class="action-btn" title="O'chirish" style="color: var(--danger);" onclick="deleteCustomer('${customer.phone}')"><i class="fas fa-trash"></i></button>
                         </td>
                     `;
                     customersList.appendChild(tr);
@@ -734,6 +771,92 @@
         loadNotifications();
         updateNotificationBadge();
         loadCustomers();
+
+        // New Customer Logic
+        const addCustBtn = document.getElementById('add-customer-btn');
+        const newCustModal = document.getElementById('newCustomerModal');
+        const closeNewCust = document.getElementById('closeNewCustomer');
+        const newCustForm = document.getElementById('new-customer-form');
+
+        addCustBtn.addEventListener('click', () => newCustModal.classList.add('show'));
+        closeNewCust.addEventListener('click', () => newCustModal.classList.remove('show'));
+
+        newCustForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const customerData = {
+                name: document.getElementById('cust-name').value,
+                phone: document.getElementById('cust-phone').value,
+                address: document.getElementById('cust-address').value,
+                message: 'Admin tomonidan qo\'shilgan mijoz',
+                date: new Date().toLocaleString('uz-UZ'),
+                status: 'Bajarildi'
+            };
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(customerData)
+                });
+                if (res.ok) {
+                    newCustModal.classList.remove('show');
+                    newCustForm.reset();
+                    loadCustomers();
+                    alert('Mijoz bazaga qo\'shildi!');
+                }
+            } catch (err) {
+                console.error("Manual customer creation failed:", err);
+            }
+        });
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-bar input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('#customers-list tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(term) ? '' : 'none';
+                });
+            });
+        }
+
+        async function deleteCustomer(phone) {
+            if (!confirm(`Haqiqatan ham telefon raqami ${phone} bo'lgan barcha ma'lumotlarni o'chirib tashlamoqchimisiz?`)) return;
+            
+            try {
+                // In this simplified system, we find all orders for this phone and delete them
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+                const toDelete = orders.filter(o => o.phone === phone);
+                
+                for (let o of toDelete) {
+                    await fetch('/api/orders/' + encodeURIComponent(o._id || o.id), { method: 'DELETE' });
+                }
+                
+                loadCustomers();
+                alert('Mijoz ma\'lumotlari o\'chirildi.');
+            } catch (err) {
+                console.error("Delete customer failed:", err);
+            }
+        }
+        window.deleteCustomer = deleteCustomer;
+
+        function markAllRead(e) {
+            e.preventDefault();
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            notifs.forEach(n => n.unread = false);
+            localStorage.setItem('qogozNotifications', JSON.stringify(notifs));
+            loadNotifications();
+            updateNotificationBadge();
+        }
+
+        window.onclick = (e) => {
+            if (e.target === newCustModal) newCustModal.classList.remove('show');
+            if (e.target === notifModal) notifModal.classList.remove('show');
+            if (e.target === chatModal) chatModal.classList.remove('show');
+        };
     </script>
 </body>
 

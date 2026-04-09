@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hisobotlar | Admin Panel</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        .reports-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .report-card {
+            background: var(--bg-white);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .report-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        @media (max-width: 900px) {
+            .reports-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="logo">
+                <img src="Icon Image/orange-q.svg" alt="Logo"> <span>QOG'OZ</span>
+            </a>
+            <p class="admin-badge">Admin Panel</p>
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="admin.html"><i class="fas fa-tachometer-alt"></i> Boshqaruv paneli</a></li>
+                <li><a href="admin-products.html"><i class="fas fa-box"></i> Mahsulotlar</a></li>
+                <li><a href="admin-orders.html"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span class="badge"
+                            id="orders-badge">0</span></a></li>
+                <li><a href="admin-customers.html"><i class="fas fa-users"></i> Mijozlar</a></li>
+                <li><a href="admin-reports.html" class="active"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-settings.html"><i class="fas fa-cog"></i> Sozlamalar</a></li>
+            </ul>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Chiqish</a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Hisobotlarni qidirish...">
+            </div>
+
+            <div class="header-actions">
+                <button class="notif-btn">
+                    <i class="far fa-bell"></i>
+                    <span class="notif-badge">0</span>
+                </button>
+                <div class="user-profile">
+                    <img id="header-avatar" src="https://ui-avatars.com/api/?name=Admin+User&background=FF8200&color=fff"
+                        alt="Admin">
+                    <div class="user-info">
+                        <strong id="header-name">Admin User</strong>
+                        <span>Boshqaruvchi</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="page-title" style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>Analitika va Hisobotlar</h1>
+                    <p>Savdo va tashriflar statistikasi</p>
+                </div>
+                <button class="btn btn-primary" onclick="window.print()">
+                    <i class="fas fa-download"></i> Hisobot yuklash
+                </button>
+            </div>
+
+            <div class="reports-grid">
+                <!-- Savdo Grafigi -->
+                <div class="report-card full-width">
+                    <h3><i class="fas fa-chart-line text-primary"></i> Haftalik Savdo Dinamikasi</h3>
+                    <canvas id="salesChart" height="100"></canvas>
+                </div>
+
+                <!-- Mahsulotlar bo'yicha -->
+                <div class="report-card">
+                    <h3><i class="fas fa-chart-pie text-success"></i> Mahsulotlar Kategoriyasi</h3>
+                    <canvas id="categoryChart"></canvas>
+                </div>
+
+                <!-- Tashriflar -->
+                <div class="report-card">
+                    <h3><i class="fas fa-users text-info"></i> Tashrif Buyuruvchilar</h3>
+                    <div style="text-align: center; padding: 20px;">
+                        <h2 id="total-visits" style="font-size: 3rem; color: var(--secondary);">0</h2>
+                        <p style="color: var(--text-light);">Jami tashriflar soni</p>
+                    </div>
+                    <canvas id="visitsChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Notification Modal -->
+    <div id="notifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell text-primary"></i> Bildirishnomalar</h3>
+                <button class="close-modal" id="closeNotif">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Bildirishnomalar dinamik yuklanadi -->
+            </div>
+            <div class="modal-footer">
+                <a href="#" onclick="markAllRead(event)">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication & Initialization
+        function checkAuth() {
+            const user = JSON.parse(sessionStorage.getItem('qogozAdminUser'));
+            if (!user) {
+                window.location.href = 'admin-login.html';
+                return;
+            }
+
+            const settings = JSON.parse(localStorage.getItem('qogozAdminSettings') || '{}');
+            if (settings.primaryColor) {
+                document.documentElement.style.setProperty('--primary', settings.primaryColor);
+            }
+            if (settings.darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+
+            const fullName = `${user.firstName} ${user.lastName}`;
+            document.getElementById('header-name').textContent = fullName;
+            const savedAvatar = localStorage.getItem('qogozAdminAvatar');
+            document.getElementById('header-avatar').src = savedAvatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=FF8200&color=fff`;
+        }
+
+        function logout() {
+            sessionStorage.removeItem('qogozAdminUser');
+            window.location.href = 'admin-login.html';
+        }
+
+        document.querySelectorAll('.logout-btn').forEach(btn => {
+            btn.addEventListener('click', e => { e.preventDefault(); logout(); });
+        });
+
+        // Notifications
+        function loadNotifications() {
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            const body = document.querySelector('.modal-body');
+            const badge = document.querySelector('.notif-badge');
+            const unread = notifs.filter(n => n.unread).length;
+            badge.textContent = unread;
+            badge.style.display = unread > 0 ? 'flex' : 'none';
+
+            if (notifs.length === 0) {
+                body.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-light);">Bildirishnomalar yo\'q</div>';
+                return;
+            }
+            body.innerHTML = '';
+            notifs.forEach(n => {
+                const div = document.createElement('div');
+                div.className = `notification-item ${n.unread ? 'unread' : ''}`;
+                div.innerHTML = `
+                    <div class="notif-icon order"><i class="fas fa-shopping-cart"></i></div>
+                    <div class="notif-details">
+                        <p><strong>${n.title}</strong> ${n.body}</p>
+                        <span class="notif-time">${n.time}</span>
+                    </div>`;
+                body.appendChild(div);
+            });
+        }
+
+        function markAllRead(e) {
+            e.preventDefault();
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            notifs.forEach(n => n.unread = false);
+            localStorage.setItem('qogozNotifications', JSON.stringify(notifs));
+            loadNotifications();
+        }
+
+        // Charts Initialization
+        function initCharts() {
+            // Sales Chart
+            const salesCtx = document.getElementById('salesChart').getContext('2d');
+            new Chart(salesCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Dush', 'Sesh', 'Chor', 'Pay', 'Jum', 'Shan', 'Yak'],
+                    datasets: [{
+                        label: 'Haftalik Savdo (mln so\'m)',
+                        data: [12, 19, 15, 25, 22, 30, 28],
+                        borderColor: '#FF8200',
+                        backgroundColor: 'rgba(255, 130, 0, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            // Category Chart
+            const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['A4 Format', 'Karton', 'Rulon', 'Boshqa'],
+                    datasets: [{
+                        data: [45, 25, 20, 10],
+                        backgroundColor: ['#FF8200', '#10b981', '#3b82f6', '#8b5cf6']
+                    }]
+                }
+            });
+
+            // Visits Data
+            const visits = JSON.parse(localStorage.getItem('qogozVisits') || '{"total":0,"byDate":{}}');
+            document.getElementById('total-visits').textContent = visits.total.toLocaleString();
+            
+            const days = Object.keys(visits.byDate).sort().slice(-7);
+            const counts = days.map(d => visits.byDate[d]);
+
+            const visitsCtx = document.getElementById('visitsChart').getContext('2d');
+            new Chart(visitsCtx, {
+                type: 'bar',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Tashriflar',
+                        data: counts,
+                        backgroundColor: '#3b82f6'
+                    }]
+                }
+            });
+        }
+
+        // Sidebar Badges
+        function updateBadges() {
+            const orders = JSON.parse(localStorage.getItem('qogozOrders') || '[]');
+            const badge = document.getElementById('orders-badge');
+            if (badge) badge.textContent = orders.length;
+        }
+
+        // Init
+        checkAuth();
+        loadNotifications();
+        updateBadges();
+        initCharts();
+
+        // Modal Listeners
+        document.querySelector('.notif-btn').addEventListener('click', () => {
+            document.getElementById('notifModal').classList.add('show');
+        });
+        document.querySelector('.close-modal').addEventListener('click', () => {
+            document.getElementById('notifModal').classList.remove('show');
+        });
+    </script>
+</body>
+
+</html>

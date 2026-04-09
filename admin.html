@@ -21,7 +21,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
-                <i class="fas fa-industry text-primary"></i> <span>QOG'OZ ZAVOD</span>
+                <img src="Icon Image/orange-q.svg" alt="Logo"> <span>QOG'OZ</span>
             </a>
             <p class="admin-badge">Admin Panel</p>
         </div>
@@ -33,7 +33,7 @@
                 <li><a href="admin-orders.html"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span class="badge"
                             id="orders-badge">0</span></a></li>
                 <li><a href="admin-customers.html"><i class="fas fa-users"></i> Mijozlar</a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-reports.html"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
                 <li><a href="admin-settings.html"><i class="fas fa-cog"></i> Sozlamalar</a></li>
             </ul>
         </nav>
@@ -139,7 +139,7 @@
             <div class="recent-orders">
                 <div class="section-header">
                     <h2>So'nggi Buyurtmalar</h2>
-                    <a href="#" class="btn-link">Barchasini ko'rish</a>
+                    <a href="admin-orders.html" class="btn-link">Barchasini ko'rish</a>
                 </div>
                 <div class="table-responsive">
                     <table class="admin-table">
@@ -161,6 +161,22 @@
             </div>
         </div>
     </main>
+
+    <!-- Notification Modal -->
+    <div id="notifModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-bell text-primary"></i> Bildirishnomalar</h3>
+                <button class="close-modal" id="closeNotif">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Bildirishnomalar dinamik yuklanadi -->
+            </div>
+            <div class="modal-footer">
+                <a href="#" onclick="markAllRead(event)">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+            </div>
+        </div>
+    </div>
 
     <style>
         /* Modal Styles */
@@ -689,6 +705,15 @@
                 return;
             }
 
+            // Apply global theme settings
+            const settings = JSON.parse(localStorage.getItem('qogozAdminSettings') || '{}');
+            if (settings.primaryColor) {
+                document.documentElement.style.setProperty('--primary', settings.primaryColor);
+            }
+            if (settings.darkMode) {
+                document.body.classList.add('dark-mode');
+            }
+
             // Update UI with admin name
             const userNameElements = document.querySelectorAll('.user-info strong');
             const userAvatars = document.querySelectorAll('.user-profile img');
@@ -720,6 +745,28 @@
         updateNotificationBadge();
         if (document.getElementById('dashboard-orders')) {
             loadDashboardInfo();
+        }
+
+        // Search functionality
+        const searchInput = document.querySelector('.search-bar input');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('#dashboard-orders tr');
+                rows.forEach(row => {
+                    const text = row.textContent.toLowerCase();
+                    row.style.display = text.includes(term) ? '' : 'none';
+                });
+            });
+        }
+
+        function markAllRead(e) {
+            e.preventDefault();
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            notifs.forEach(n => n.unread = false);
+            localStorage.setItem('qogozNotifications', JSON.stringify(notifs));
+            loadNotifications();
+            updateNotificationBadge();
         }
     </script>
 </body>

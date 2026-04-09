@@ -363,7 +363,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
-                <i class="fas fa-industry text-primary"></i> <span>QOG'OZ ZAVOD</span>
+                <img src="Icon Image/orange-q.svg" alt="Logo"> <span>QOG'OZ</span>
             </a>
             <p class="admin-badge">Admin Panel</p>
         </div>
@@ -375,7 +375,7 @@
                 <li><a href="admin-orders.html"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span class="badge"
                             id="orders-badge">0</span></a></li>
                 <li><a href="admin-customers.html"><i class="fas fa-users"></i> Mijozlar</a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-reports.html"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
                 <li><a href="admin-settings.html" class="active"><i class="fas fa-cog"></i> Sozlamalar</a></li>
             </ul>
         </nav>
@@ -1056,39 +1056,42 @@
             el.style.border = `3px solid ${color}`;
             el.style.boxShadow = '0 0 0 3px white inset';
             document.documentElement.style.setProperty('--primary', color);
-            localStorage.setItem('qogozAccentColor', color);
+            
+            const settings = JSON.parse(localStorage.getItem('qogozAdminSettings') || '{}');
+            settings.primaryColor = color;
+            localStorage.setItem('qogozAdminSettings', JSON.stringify(settings));
+            
             showToast('Rang o\'zgartirildi!');
         }
 
         function toggleDarkMode(el) {
+            const settings = JSON.parse(localStorage.getItem('qogozAdminSettings') || '{}');
             if (el.checked) {
-                document.body.style.background = '#1a1a2e';
-                document.body.style.color = '#e2e8f0';
-                localStorage.setItem('qogozDarkMode', '1');
+                document.body.classList.add('dark-mode');
+                settings.darkMode = true;
                 showToast('Qorang\'i rejim yoqildi');
             } else {
-                document.body.style.background = '';
-                document.body.style.color = '';
-                localStorage.removeItem('qogozDarkMode');
+                document.body.classList.remove('dark-mode');
+                settings.darkMode = false;
                 showToast('Yorug\' rejim yoqildi');
             }
+            localStorage.setItem('qogozAdminSettings', JSON.stringify(settings));
         }
 
         function applyStoredColor() {
-            const color = localStorage.getItem('qogozAccentColor');
-            if (color) {
-                document.documentElement.style.setProperty('--primary', color);
+            const settings = JSON.parse(localStorage.getItem('qogozAdminSettings') || '{}');
+            if (settings.primaryColor) {
+                document.documentElement.style.setProperty('--primary', settings.primaryColor);
                 document.querySelectorAll('.color-option').forEach(el => {
-                    if (el.dataset.color === color) {
-                        el.style.border = `3px solid ${color}`;
+                    if (el.dataset.color === settings.primaryColor) {
+                        el.style.border = `3px solid ${settings.primaryColor}`;
                         el.style.boxShadow = '0 0 0 3px white inset';
                     }
                 });
             }
-            const dark = localStorage.getItem('qogozDarkMode');
-            if (dark) {
+            if (settings.darkMode) {
                 document.getElementById('dark-mode').checked = true;
-                document.body.style.background = '#1a1a2e';
+                document.body.classList.add('dark-mode');
             }
         }
 

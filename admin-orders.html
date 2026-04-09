@@ -21,7 +21,7 @@
     <aside class="sidebar">
         <div class="sidebar-header">
             <a href="index.html" class="logo">
-                <i class="fas fa-industry text-primary"></i> <span>QOG'OZ ZAVOD</span>
+                <img src="Icon Image/orange-q.svg" alt="Logo"> <span>QOG'OZ</span>
             </a>
             <p class="admin-badge">Admin Panel</p>
         </div>
@@ -33,7 +33,7 @@
                 <li><a href="admin-orders.html" class="active"><i class="fas fa-shopping-cart"></i> Buyurtmalar <span
                             class="badge" id="orders-badge">0</span></a></li>
                 <li><a href="admin-customers.html"><i class="fas fa-users"></i> Mijozlar</a></li>
-                <li><a href="#"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
+                <li><a href="admin-reports.html"><i class="fas fa-chart-bar"></i> Hisobotlar</a></li>
                 <li><a href="admin-settings.html"><i class="fas fa-cog"></i> Sozlamalar</a></li>
             </ul>
         </nav>
@@ -74,24 +74,25 @@
                     <h1>Buyurtmalar</h1>
                     <p>Barcha kelib tushgan buyurtmalarni boshqarish</p>
                 </div>
-                <button class="btn btn-primary" style="padding: 10px 20px; font-size: 0.9rem;">
+                <button class="btn btn-primary" id="add-order-btn" style="padding: 10px 20px; font-size: 0.9rem;">
                     <i class="fas fa-plus"></i> Yangi Buyurtma
                 </button>
             </div>
 
             <!-- Filters -->
             <div style="display: flex; gap: 15px; margin-bottom: 20px;">
-                <select style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
-                    <option>Barcha holatlar</option>
-                    <option>Kutilmoqda</option>
-                    <option>Jarayonda</option>
-                    <option>Bajarildi</option>
-                    <option>Bekor qilingan</option>
+                <select id="status-filter" style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
+                    <option value="">Barcha holatlar</option>
+                    <option value="Kutilmoqda">Kutilmoqda</option>
+                    <option value="Jarayonda">Jarayonda</option>
+                    <option value="Bajarildi">Bajarildi</option>
+                    <option value="Bekor qilingan">Bekor qilingan</option>
                 </select>
-                <input type="date"
+                <input type="date" id="date-filter"
                     style="padding: 10px; border-radius: 8px; border: 1px solid var(--border); outline: none;">
-                <button class="btn btn-outline" style="padding: 10px 20px; font-size: 0.9rem;"><i
+                <button class="btn btn-outline" id="apply-filters" style="padding: 10px 20px; font-size: 0.9rem;"><i
                         class="fas fa-filter"></i> Filtrlash</button>
+                <button class="btn btn-outline" id="reset-filters" style="padding: 10px 20px; font-size: 0.9rem; color: var(--danger); border-color: rgba(239,68,68,0.2);">Tozalash</button>
             </div>
 
             <!-- Orders Table -->
@@ -140,6 +141,37 @@
             </div>
         </div>
     </main>
+
+    <!-- New Order Modal -->
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus text-primary"></i> Yangi Buyurtma Qo'shish</h3>
+                <button class="close-modal" id="closeNewOrder">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <form id="new-order-form">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Mijoz ismi</label>
+                        <input type="text" id="order-customer-name" class="form-control" placeholder="Ismni kiriting" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Telefon raqam</label>
+                        <input type="tel" id="order-customer-phone" class="form-control" placeholder="+998" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Manzil</label>
+                        <input type="text" id="order-customer-address" class="form-control" placeholder="Etkazib berish manzili">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Xabar / Buyurtma tafsilotlari</label>
+                        <textarea id="order-message" class="form-control" style="min-height: 80px;" placeholder="Mahsulotlar va miqdori..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-top: 10px;">Buyurtmani saqlash</button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <style>
         /* Modal Styles */
@@ -341,7 +373,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a href="#">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
+                <a href="#" onclick="markAllRead(event)">Barcha bildirishnomalarni o'qilgan deb belgilash</a>
             </div>
         </div>
     </div>
@@ -415,6 +447,15 @@
             if (!user) {
                 window.location.href = 'admin-login.html';
                 return;
+            }
+
+            // Apply global theme settings
+            const settings = JSON.parse(localStorage.getItem('qogozAdminSettings') || '{}');
+            if (settings.primaryColor) {
+                document.documentElement.style.setProperty('--primary', settings.primaryColor);
+            }
+            if (settings.darkMode) {
+                document.body.classList.add('dark-mode');
             }
 
             // Update UI with admin name
@@ -767,6 +808,103 @@
         loadOrders();
         loadNotifications();
         updateNotificationBadge();
+
+        // New Order Modal
+        const addOrderBtn = document.getElementById('add-order-btn');
+        const newOrderModal = document.getElementById('newOrderModal');
+        const closeNewOrder = document.getElementById('closeNewOrder');
+        const newOrderForm = document.getElementById('new-order-form');
+
+        addOrderBtn.addEventListener('click', () => newOrderModal.classList.add('show'));
+        closeNewOrder.addEventListener('click', () => newOrderModal.classList.remove('show'));
+
+        newOrderForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const orderData = {
+                name: document.getElementById('order-customer-name').value,
+                phone: document.getElementById('order-customer-phone').value,
+                address: document.getElementById('order-customer-address').value,
+                message: document.getElementById('order-message').value,
+                date: new Date().toLocaleString('uz-UZ'),
+                status: 'Kutilmoqda'
+            };
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+                if (res.ok) {
+                    newOrderModal.classList.remove('show');
+                    newOrderForm.reset();
+                    loadOrders();
+                    alert('Yangi buyurtma saqlandi!');
+                }
+            } catch (err) {
+                console.error("Manual order creation failed:", err);
+            }
+        });
+
+        // Search & Filtering
+        const searchInput = document.querySelector('.search-bar input');
+        const statusFilter = document.getElementById('status-filter');
+        const dateFilter = document.getElementById('date-filter');
+        const applyBtn = document.getElementById('apply-filters');
+        const resetBtn = document.getElementById('reset-filters');
+
+        function filterOrders() {
+            const term = searchInput.value.toLowerCase();
+            const status = statusFilter.value;
+            const date = dateFilter.value; // YYYY-MM-DD
+
+            const rows = document.querySelectorAll('#orders-list tr');
+            rows.forEach(row => {
+                if (row.cells.length < 8) return; // Empty msg row
+
+                const nameText = row.cells[1].textContent.toLowerCase();
+                const idText = row.cells[0].textContent.toLowerCase();
+                const statusText = row.cells[6].textContent.trim();
+                const rowDate = row.cells[2].textContent; // DD.MM.YYYY, HH:mm
+
+                let show = true;
+
+                if (term && !nameText.includes(term) && !idText.includes(term)) show = false;
+                if (status && statusText !== status) show = false;
+                if (date) {
+                    // Simple date match
+                    const dParts = date.split('-'); // 2026, 04, 08
+                    const formattedDate = `${dParts[2]}.${dParts[1]}.${dParts[0]}`;
+                    if (!rowDate.includes(formattedDate)) show = false;
+                }
+
+                row.style.display = show ? '' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterOrders);
+        applyBtn.addEventListener('click', filterOrders);
+        resetBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            statusFilter.value = '';
+            dateFilter.value = '';
+            filterOrders();
+        });
+
+        function markAllRead(e) {
+            e.preventDefault();
+            const notifs = JSON.parse(localStorage.getItem('qogozNotifications') || '[]');
+            notifs.forEach(n => n.unread = false);
+            localStorage.setItem('qogozNotifications', JSON.stringify(notifs));
+            loadNotifications();
+            updateNotificationBadge();
+        }
+
+        window.onclick = (e) => {
+            if (e.target === newOrderModal) newOrderModal.classList.remove('show');
+            if (e.target === notifModal) notifModal.classList.remove('show');
+            if (e.target === chatModal) chatModal.classList.remove('show');
+        };
     </script>
 </body>
 
