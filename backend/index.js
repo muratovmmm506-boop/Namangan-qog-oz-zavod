@@ -77,7 +77,7 @@ async function initDb() {
     try {
         await sequelize.authenticate();
         console.log('✅ PostgreSQL ulanishi muvaffaqiyatli!');
-        await sequelize.sync();
+        await sequelize.sync({ alter: true });
         console.log('✅ Ma\'lumotlar bazasi jadvallari tayyor!');
         isDbConnected = true;
     } catch (err) {
