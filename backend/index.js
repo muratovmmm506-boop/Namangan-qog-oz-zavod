@@ -49,7 +49,7 @@ const Notification = sequelize.define('Notification', {
 });
 
 const Order = sequelize.define('Order', {
-    id: { type: DataTypes.STRING, primaryKey: true },
+    order_id: DataTypes.STRING, // For custom IDs like 'ORD-5197'
     name: { type: DataTypes.STRING, allowNull: false },
     phone: { type: DataTypes.STRING, allowNull: false },
     address: DataTypes.STRING,
@@ -61,8 +61,7 @@ const Order = sequelize.define('Order', {
 const Reply = sequelize.define('Reply', {
     text: DataTypes.TEXT,
     time: DataTypes.STRING,
-    date: DataTypes.STRING,
-    OrderId: DataTypes.STRING // Match Order.id type
+    date: DataTypes.STRING
 });
 
 // Associations

@@ -699,7 +699,7 @@
                 const res = await fetch('/api/orders');
                 const allOrders = await res.json();
                 
-                const orders = allOrders.filter(o => !o.isChat && !String(o.id || o._id).startsWith('#MSG-'));
+                const orders = allOrders.filter(o => !o.isChat && !String(o.order_id || o.id || o._id).startsWith('#MSG-'));
                 const ordersList = document.getElementById('orders-list');
                 ordersList.innerHTML = '';
 
@@ -726,7 +726,7 @@
                         }
                     };
                     tr.innerHTML = `
-                        <td>${String(orderId).substring(0, 8)}...</td>
+                    <td>${(order.order_id || order.id || "").toString().substring(0, 15)}</td>
                         <td>
                             <div class="client-info">
                                 <strong>${order.name}</strong>

@@ -686,7 +686,7 @@
                                         date.getMinutes().toString().padStart(2, '0');
 
                                     const newOrder = {
-                                        id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
+                                        order_id: 'ORD-' + Math.floor(1000 + Math.random() * 9000),
                                         name: name,
                                         phone: phone,
                                         address: address,
@@ -1030,7 +1030,7 @@
                 date.getMinutes().toString().padStart(2, '0');
 
             const newMsg = {
-                id: '#MSG-' + Math.floor(1000 + Math.random() * 9000),
+                order_id: '#MSG-' + Math.floor(1000 + Math.random() * 9000),
                 name: name,
                 phone: phone,
                 address: 'Chat orqali yozildi',
