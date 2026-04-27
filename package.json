@@ -1,0 +1,12 @@
+{
+  "name": "qogoz-zavod-root",
+  "version": "1.0.0",
+  "description": "Root package for deployment",
+  "scripts": {
+    "postinstall": "cd backend && npm install",
+    "start": "node backend/index.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
